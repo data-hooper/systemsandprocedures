@@ -1,0 +1,3186 @@
+LCSD Facility Use Request and Reservation Management System
+Product Requirements Document (PRD) for AI Implementation
+Version: 2.0
+Date: April 2026
+AI Coding Assistant: Cursor AI / Windsurf
+Implementation Scope: Front-end prototype with simulated backend
+User Role: Principal (Fixed)
+
+Table of Contents
+
+Executive Summary
+System Overview
+
+2.1 Problem Statement
+2.2 System Purpose
+2.3 Key Stakeholders
+2.4 System Scope
+
+
+Assumptions and Constraints
+
+3.1 Technology Stack
+3.2 Design Constraints
+3.3 Business Rules
+
+
+Functional Requirements
+
+4.1 Pre-Reservation Approval Support
+4.2 Post-Decision Support
+4.3 Ongoing Support
+
+
+Non-Functional Requirements
+Data Model
+
+6.1 Entity Definitions
+6.2 Entity Relationships
+6.3 Sample Data Structure
+
+
+User Interface Specifications
+
+7.1 Global UI Elements
+7.2 Home Screen
+7.3 Submit Request Screen
+7.4 Pending Requests Screen
+7.5 Review Request Screen
+7.6 Calendar View Screen
+7.7 Reference Documents Screen
+7.8 Archived Requests Screen
+
+
+Program Logic & Feature Behavior
+
+8.1 Feature 1: Submit Request
+8.2 Feature 2: Review Request
+8.3 Feature 3: Calendar View
+
+
+Validation & Error Handling
+
+9.1 Field-Level Validation
+9.2 Form-Level Validation
+9.3 Error Display
+
+
+Data Storage & State Management
+
+10.1 Conceptual Backend
+10.2 Prototype Data Simulation
+
+
+Implementation Guide for AI
+
+11.1 File Structure
+11.2 Sample Data Implementation
+11.3 CSS Styling Requirements
+11.4 JavaScript Implementation
+11.5 Testing Checklist
+
+
+Appendix
+
+12.1 Use Case Summaries
+12.2 Design Goals
+12.3 Glossary
+
+
+
+
+1. Executive Summary
+The Local County School District (LCSD) Facility Use Request and Reservation Management System is a web-based application designed to streamline the process of requesting, reviewing, and managing after-hours and weekend facility use.
+Current Challenge: LCSD lacks a centralized system, resulting in miscommunication, scheduling conflicts, and administrative inefficiencies.
+Solution: A user-friendly web application that routes facility use requests through a standardized approval workflow (Requestor → Principal → Operations → Calendar).
+Prototype Scope: This implementation focuses on three core features from the Principal's perspective:
+
+Submit Request - Principals can submit facility use requests
+Review Request - Principals can review and approve/deny requests for their schools
+Calendar View - Principals can view and filter scheduled facility reservations
+
+Key Constraint: This is a front-end-only prototype. Backend functionality (database, email notifications, file storage) will be simulated using JavaScript and sample data.
+
+2. System Overview
+2.1 Problem Statement
+LCSD currently manages after-hours facility use through email, phone calls, and paper forms. This decentralized approach creates:
+
+Communication gaps between requestors, principals, and operations staff
+Missed HVAC scheduling resulting in energy waste and uncomfortable conditions
+Lost contract renewals due to lack of proactive expiration tracking
+Accountability issues when approval/denial decisions lack documentation
+Reporting challenges for tracking custodial, maintenance, and HVAC costs
+
+2.2 System Purpose
+The system streamlines facility reservation management by:
+
+Centralizing requests in a single web-based platform
+Standardizing information collection through structured forms
+Routing requests through a defined approval workflow
+Maintaining a shared calendar of facility usage
+Generating quotes for paid facility use (conceptual in prototype)
+Tracking support needs (HVAC, custodial, maintenance)
+Retaining historical records for accountability and analysis
+
+2.3 Key Stakeholders
+For this prototype, the user is always a Principal with the following responsibilities:
+
+Submit requests for facility use at their school
+Review and approve/deny requests submitted by others for their school
+View calendar of all scheduled events at their school
+Access reference documents for facility use policies
+Review archived requests for historical reference
+
+Other stakeholders (conceptual, not implemented as separate roles):
+
+Public Requestors
+LCSD Employee Requestors
+Operations Department Staff
+Energy Manager
+
+2.4 System Scope
+In Scope for Prototype:
+✅ Submit facility use requests (one-time and recurring)
+✅ Review pending requests with approve/deny functionality
+✅ View and filter calendar of scheduled events
+✅ Access reference documents
+✅ View archived requests
+✅ Role-based interface (Principal view only)
+✅ Visual status differentiation (Pending vs Approved)
+Out of Scope for Prototype:
+❌ Quote generation workflow (button present but disabled)
+❌ Report generation (button present but disabled)
+❌ Actual email notifications (simulated with console logs)
+❌ Real file uploads (filename captured, file not stored)
+❌ Backend database (data simulated in JavaScript)
+❌ User authentication/login
+❌ Multi-role switching
+
+3. Assumptions and Constraints
+3.1 Technology Stack
+Required Technologies:
+
+HTML5
+CSS3 (Flexbox/Grid for layouts)
+JavaScript (ES6+, vanilla JS)
+
+Optional Enhancements:
+
+Bootstrap or Tailwind CSS for styling
+Font Awesome for icons
+A lightweight calendar library (e.g., FullCalendar.js) for calendar display
+
+Prohibited:
+
+Backend frameworks (Node.js, Express, Python, etc.)
+Database systems (PostgreSQL, MongoDB, MySQL, etc.)
+React, Vue, Angular, or similar frameworks
+Authentication systems
+Actual file storage or email services
+
+3.2 Design Constraints
+Course-Imposed Constraints:
+
+Front-end only: No backend server or API implementation
+No deployment: Runs locally in browser only
+No database: Data stored in JavaScript variables/arrays
+Limited features: Three core features only (submit, review, calendar)
+Single role: Principal perspective only (no role switching)
+
+Design Goals:
+
+Accessibility: ADA-compliant, visual status differentiation using color + icons
+Consistency: Unified layout and navigation across all screens
+Simplicity: Minimal visual clutter, clear action paths
+Usability: All actions within 3 clicks, intuitive workflows
+Error Prevention: Dropdowns for constrained choices, validation before submission
+Responsive: Works on desktop, tablet, and mobile devices
+
+3.3 Business Rules
+Data Retention:
+
+All reservation requests retained for 5 years from event date
+Denied requests immediately archived (removed from active calendar)
+
+Approval Workflow:
+
+All requests start with status "Pending"
+Principals can approve (→ "Approved"), deny (→ "Denied"), or request quote (→ "Quote Pending")
+Approved events appear on calendar with visual differentiation
+Denied events removed from calendar but retained in archived requests
+
+Calendar Display:
+
+Principals see only events for their assigned school(s)
+Events visually differentiated by status (Pending: orange + clock icon; Approved: green + checkmark icon)
+
+Request Types:
+
+One-time: Single event on specific date
+Recurring: Events repeating over date range (start date through end date)
+
+
+4. Functional Requirements
+4.1 Pre-Reservation Approval Support
+FR-1.1: Request Submission
+The system shall allow Principals to submit facility reservation requests for one-time or recurring events at their school.
+FR-1.2: Request Notification
+The system shall simulate notifying the Principal when a new request is submitted for their school (console log).
+FR-1.3: Calendar Access
+The system shall provide a calendar view showing pending and approved reservations for the Principal's school.
+FR-1.4: Quote Generation Interface
+The system shall display a "Create Quote" button on the review screen (disabled/grayed out in prototype).
+4.2 Post-Decision Support
+FR-2.1: Approval/Denial Notification
+The system shall simulate notifying requestors when their request is approved or denied (console log).
+FR-2.2: Calendar Filtering
+The system shall allow filtering calendar views by month/year, school, and status.
+FR-2.3: Denial Handling
+The system shall archive denied requests and remove them from the active calendar view.
+FR-2.4: Status Updates
+The system shall update request status based on Principal decision (Pending → Approved/Denied/Quote Pending).
+4.3 Ongoing Support
+FR-3.1: Calendar Access
+The system shall allow Principals to view the calendar without modification rights (view-only mode).
+FR-3.2: Historical Record Access
+The system shall provide access to archived requests for historical reference.
+FR-3.3: Reference Document Access
+The system shall provide access to facility use policy documents.
+FR-3.4: Reporting Interface
+The system shall display a "Generate Report" button on calendar view (disabled/grayed out in prototype).
+
+5. Non-Functional Requirements
+NFR-1: The system shall be web-based and accessible via modern browsers (Chrome, Firefox, Safari, Edge)
+NFR-2: The system shall be responsive and function on desktop, tablet, and mobile devices
+NFR-3: The system event calendar shall visually differentiate between pending and approved events using both color and non-color indicators (icons)
+NFR-4: The system shall follow accessibility best practices (sufficient color contrast, keyboard navigation, semantic HTML)
+NFR-5: The system shall maintain consistent layout and navigation across all screens
+NFR-6: The system shall validate user input and display clear error messages for invalid data
+
+6. Data Model
+6.1 Entity Definitions
+The system manages six primary entities. For the prototype, these are represented as JavaScript objects.
+EVENT
+Stores all facility reservation requests.
+Attributes:
+
+id (Number): Unique identifier
+requestType (String): "One-time" or "Recurring"
+requestorName (String): Name of person submitting request
+requestorEmail (String): Email address
+eventDate (String): Date for one-time events (YYYY-MM-DD format)
+startDate (String): Start date for recurring events
+endDate (String): End date for recurring events
+startTime (String): Event start time (HH:MM format)
+duration (Number): Duration in hours
+schoolName (String): School where event will be held
+spaceName (String): Specific space (Gymnasium, Cafeteria, etc.)
+attendees (Number): Expected number of attendees
+description (String): Event description
+custodialSupport (String): Requested custodial support details
+maintenanceSupport (String): Requested maintenance support details
+uploadedFile (String): Filename of uploaded file (if any)
+status (String): "Pending", "Approved", "Denied", "Quote Pending"
+comments (String): Internal comments from reviewer
+reviewerName (String): Name of person who reviewed (if reviewed)
+
+SCHOOL
+Stores information about LCSD schools.
+Attributes:
+
+id (Number): Unique identifier
+name (String): School name
+type (String): "High School", "Middle School", "Elementary School", etc.
+
+SPACE
+Stores reservable spaces within schools.
+Attributes:
+
+id (Number): Unique identifier
+schoolId (Number): References School ID
+name (String): Space name (e.g., "Gymnasium", "Cafeteria", "Room 200")
+capacity (Number): Maximum occupancy
+
+REFERENCE_DOCUMENT
+Stores facility use policy documents.
+Attributes:
+
+id (Number): Unique identifier
+name (String): Document name
+uploadDate (String): Date uploaded (YYYY-MM-DD)
+fileUrl (String): Path to PDF file
+
+USER (Simplified - Principal only)
+For prototype, represents the logged-in Principal.
+Attributes:
+
+id (Number): User ID
+name (String): "Dr. Sarah Johnson" (example)
+email (String): "sjohnson@lcsd.edu"
+role (String): "Principal"
+schoolName (String): "Lincoln High School"
+
+6.2 Entity Relationships
+Conceptual Relationships:
+
+User (Principal) submits Event → One-to-many
+User (Principal) reviews Event → One-to-many
+School contains Space → One-to-many
+School hosts Event → One-to-many
+Space holds Event → One-to-many
+
+For prototype: Relationships managed through matching properties (e.g., event.schoolName matches school.name).
+6.3 Sample Data Structure
+Sample data will be defined in js/data.js as JavaScript arrays:
+javascript// Sample current user (Principal)
+const currentUser = {
+  id: 1,
+  name: "Dr. Sarah Johnson",
+  email: "sjohnson@lcsd.edu",
+  role: "Principal",
+  schoolName: "Lincoln High School"
+};
+
+// Sample schools
+const schools = [
+  { id: 1, name: "Lincoln High School", type: "High School" },
+  { id: 2, name: "Jefferson Middle School", type: "Middle School" },
+  { id: 3, name: "Washington Elementary", type: "Elementary School" }
+];
+
+// Sample spaces
+const spaces = [
+  { id: 1, schoolId: 1, name: "Gymnasium", capacity: 500 },
+  { id: 2, schoolId: 1, name: "Cafeteria", capacity: 300 },
+  { id: 3, schoolId: 1, name: "Auditorium", capacity: 400 },
+  { id: 4, schoolId: 1, name: "Room 200", capacity: 30 },
+  { id: 5, schoolId: 2, name: "Gymnasium", capacity: 350 },
+  { id: 6, schoolId: 2, name: "Cafeteria", capacity: 250 }
+];
+
+// Sample events (5-10 records with various statuses)
+const events = [
+  {
+    id: 1,
+    requestType: "One-time",
+    requestorName: "John Smith",
+    requestorEmail: "john@youthsoccer.org",
+    eventDate: "2026-05-15",
+    startDate: null,
+    endDate: null,
+    startTime: "09:00",
+    duration: 3,
+    schoolName: "Lincoln High School",
+    spaceName: "Gymnasium",
+    attendees: 45,
+    description: "Youth soccer tournament for ages 10-12",
+    custodialSupport: "Setup and takedown of goals",
+    maintenanceSupport: "None",
+    uploadedFile: "tournament_schedule.pdf",
+    status: "Pending",
+    comments: "",
+    reviewerName: null
+  },
+  {
+    id: 2,
+    requestType: "Recurring",
+    requestorName: "Maria Garcia",
+    requestorEmail: "maria@communityband.org",
+    eventDate: null,
+    startDate: "2026-05-01",
+    endDate: "2026-08-31",
+    startTime: "18:00",
+    duration: 2,
+    schoolName: "Lincoln High School",
+    spaceName: "Auditorium",
+    attendees: 60,
+    description: "Community band practice every Tuesday evening",
+    custodialSupport: "None",
+    maintenanceSupport: "Ensure sound system is functional",
+    uploadedFile: null,
+    status: "Approved",
+    comments: "Approved for summer session. Sound system will be checked weekly.",
+    reviewerName: "Dr. Sarah Johnson"
+  },
+  // ... more sample events
+];
+
+// Sample reference documents
+const referenceDocuments = [
+  {
+    id: 1,
+    name: "Facility Use Guidelines",
+    uploadDate: "2026-01-15",
+    fileUrl: "assets/sample-documents/facility_guidelines.pdf"
+  },
+  {
+    id: 2,
+    name: "Pricing Policy",
+    uploadDate: "2026-01-15",
+    fileUrl: "assets/sample-documents/pricing_policy.pdf"
+  },
+  {
+    id: 3,
+    name: "Safety Protocols",
+    uploadDate: "2026-02-01",
+    fileUrl: "assets/sample-documents/safety_protocols.pdf"
+  }
+];
+
+7. User Interface Specifications
+7.1 Global UI Elements
+Every screen includes:
+Header Section:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
+|  (Centered, consistent across pages)     |
++------------------------------------------+
+Page Title:
+Below header, each page displays its specific title:
+
+"Facilities Reservation Request Form"
+"Pending Requests"
+"Request for Review"
+"Facilities Reservation Calendar"
+"Facilities Reservation Reference Documents"
+"Facilities Reservation Archived Requests"
+
+Navigation:
+
+Home button/link on all screens (except Home)
+Consistent styling and positioning
+
+Footer:
+
+Simple footer with copyright or system info (optional)
+
+
+7.2 Home Screen
+Page Title: None (just logo and district name)
+Layout:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
+|        Facilities Reservations           |
++------------------------------------------+
+|                                          |
+|   +----------------+  +----------------+ |
+|   | Submit Request |  |   Documents    | |
+|   +----------------+  +----------------+ |
+|                                          |
+|   +----------------+  +----------------+ |
+|   |Review Requests |  |   Archived     | |
+|   |                |  |   Requests     | |
+|   +----------------+  +----------------+ |
+|                                          |
+|           +----------------+             |
+|           |    Calendar    |             |
+|           +----------------+             |
+|                                          |
++------------------------------------------+
+Button Grid:
+
+Row 1: Submit Request, Documents (side by side)
+Row 2: Review Requests, Archived Requests (side by side)
+Row 3: Calendar (centered, spans width)
+
+Button Specifications:
+
+Large, easily clickable
+Clear labels
+Consistent styling (same color scheme, rounded corners, hover effects)
+Equal size for all buttons
+
+Interactions:
+
+Click "Submit Request" → Navigate to Submit Request screen
+Click "Documents" → Navigate to Reference Documents screen
+Click "Review Requests" → Navigate to Pending Requests screen
+Click "Archived Requests" → Navigate to Archived Requests screen
+Click "Calendar" → Navigate to Calendar View screen
+
+Implementation Notes:
+html<div class="home-container">
+  <div class="logo-section">
+    <img src="assets/lcsd-logo.png" alt="LCSD Logo" class="logo">
+    <h1>Local County School District</h1>
+    <h2>Facilities Reservations</h2>
+  </div>
+  
+  <div class="button-grid">
+    <div class="button-row">
+      <button onclick="navigateTo('submit-request.html')" class="nav-button">
+        Submit Request
+      </button>
+      <button onclick="navigateTo('reference-documents.html')" class="nav-button">
+        Documents
+      </button>
+    </div>
+    
+    <div class="button-row">
+      <button onclick="navigateTo('pending-requests.html')" class="nav-button">
+        Review Requests
+      </button>
+      <button onclick="navigateTo('archived-requests.html')" class="nav-button">
+        Archived Requests
+      </button>
+    </div>
+    
+    <div class="button-row centered">
+      <button onclick="navigateTo('calendar.html')" class="nav-button">
+        Calendar
+      </button>
+    </div>
+  </div>
+</div>
+
+7.3 Submit Request Screen
+Page Title: "Facilities Reservation Request Form"
+Layout:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
++------------------------------------------+
+| [Home Button]                            |
+|                                          |
+| Facilities Reservation Request Form      |
+|                                          |
+| Request Type:                            |
+| ( ) One-time    ( ) Recurring            |
+|                                          |
+| Name: [Dr. Sarah Johnson]                |
+| (auto-populated, read-only)              |
+|                                          |
+| Email: [sjohnson@lcsd.edu]               |
+| (auto-populated, read-only)              |
+|                                          |
+| Event Date: [__________] (Date picker)   |
+|                                          |
+| -- IF Recurring selected --              |
+| End Date: [__________] (Date picker)     |
+|                                          |
+| Start Time: [__________] (Time picker)   |
+|                                          |
+| Duration: [__________] (Number) hours    |
+|                                          |
+| Location: [Dropdown - Schools]           |
+|                                          |
+| Space: [Dropdown - Spaces]               |
+|                                          |
+| Number of Attendees: [__________]        |
+|                                          |
+| Event Description:                       |
+| [________________________________]       |
+| [________________________________]       |
+|                                          |
+| Requested Custodial Support:             |
+| [________________________________]       |
+|                                          |
+| Requested Maintenance Support:           |
+| [________________________________]       |
+|                                          |
+| File Upload: [Choose File]               |
+|                                          |
+|            [Submit]                      |
++------------------------------------------+
+Field Specifications:
+FieldTypeRequiredValidationNotesRequest TypeRadio buttonsYesMust select oneSide-by-side optionsNameText (read-only)YesN/AAuto-populated from currentUserEmailEmail (read-only)YesN/AAuto-populated from currentUserEvent DateDate pickerYesMust be future dateFor one-time eventsEnd DateDate pickerConditionalMust be after Event DateOnly shows if Recurring selectedStart TimeTime pickerYesValid time format24-hour or 12-hour with AM/PMDurationNumberYesMust be positive integerIn hoursLocationDropdownYesMust select from listPopulated from schools arraySpaceDropdownYesMust select from listFiltered based on selected LocationNumber of AttendeesNumberYesMust be positive integer-Event DescriptionTextareaYesMax 500 charactersMulti-line textCustodial SupportTextareaNoMax 300 charactersOptionalMaintenance SupportTextareaNoMax 300 charactersOptionalFile UploadFile inputNo.pdf, .doc, .docx, .xls, .xlsx; max 10MBOptional
+Conditional Display Logic:
+When "One-time" selected:
+
+Show: Event Date field
+Hide: End Date field
+
+When "Recurring" selected:
+
+Show: Event Date field (labeled "Start Date")
+Show: End Date field
+
+Space Dropdown Population:
+
+When user selects Location (school), filter spaces array to show only spaces for that school
+Example: If "Lincoln High School" selected → Show only spaces with schoolId: 1
+
+Form Behavior:
+On page load:
+
+Auto-populate Name with currentUser.name
+Auto-populate Email with currentUser.email
+Set Name and Email fields to read-only
+Default Request Type to "One-time"
+Hide End Date field initially
+
+When Request Type changes:
+
+If "Recurring" selected → Show End Date field, change "Event Date" label to "Start Date"
+If "One-time" selected → Hide End Date field, change label back to "Event Date"
+
+When Location changes:
+
+Filter spaces array: spaces.filter(space => space.schoolId === selectedSchoolId)
+Update Space dropdown options
+Reset Space selection
+
+When Submit clicked:
+
+Validate all required fields
+Validate field formats (date, email, number, file size/type)
+Check logical constraints (end date > start date, duration > 0, etc.)
+If validation fails:
+
+Display error messages next to invalid fields
+Highlight invalid fields in red
+Scroll to first error
+Do not proceed
+
+
+If validation succeeds:
+
+Collect form data into object
+Generate new event ID
+Set status to "Pending"
+Add to events array
+Log simulated emails to console
+Display success message: "Request submitted successfully!"
+Navigate to Home screen
+
+
+
+Implementation Example:
+javascript// In submit-request.js
+
+// Auto-populate fields on page load
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('name').value = currentUser.name;
+  document.getElementById('email').value = currentUser.email;
+  document.getElementById('name').readOnly = true;
+  document.getElementById('email').readOnly = true;
+});
+
+// Handle request type change
+document.querySelectorAll('input[name="requestType"]').forEach(radio => {
+  radio.addEventListener('change', function() {
+    const endDateField = document.getElementById('endDateGroup');
+    const eventDateLabel = document.querySelector('label[for="eventDate"]');
+    
+    if (this.value === 'Recurring') {
+      endDateField.style.display = 'block';
+      eventDateLabel.textContent = 'Start Date:';
+    } else {
+      endDateField.style.display = 'none';
+      eventDateLabel.textContent = 'Event Date:';
+    }
+  });
+});
+
+// Handle location change (filter spaces)
+document.getElementById('location').addEventListener('change', function() {
+  const selectedSchoolName = this.value;
+  const selectedSchool = schools.find(s => s.name === selectedSchoolName);
+  
+  if (selectedSchool) {
+    const filteredSpaces = spaces.filter(sp => sp.schoolId === selectedSchool.id);
+    
+    const spaceDropdown = document.getElementById('space');
+    spaceDropdown.innerHTML = '<option value="">-- Select Space --</option>';
+    
+    filteredSpaces.forEach(space => {
+      const option = document.createElement('option');
+      option.value = space.name;
+      option.textContent = space.name;
+      spaceDropdown.appendChild(option);
+    });
+  }
+});
+
+// Handle form submission
+document.getElementById('submitRequestForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  // Validate form (see section 9 for validation details)
+  if (!validateForm()) {
+    return;
+  }
+  
+  // Collect form data
+  const formData = {
+    id: events.length + 1,
+    requestType: document.querySelector('input[name="requestType"]:checked').value,
+    requestorName: document.getElementById('name').value,
+    requestorEmail: document.getElementById('email').value,
+    eventDate: document.getElementById('eventDate').value,
+    startDate: document.querySelector('input[name="requestType"]:checked').value === 'Recurring' 
+      ? document.getElementById('eventDate').value : null,
+    endDate: document.querySelector('input[name="requestType"]:checked').value === 'Recurring'
+      ? document.getElementById('endDate').value : null,
+    startTime: document.getElementById('startTime').value,
+    duration: parseInt(document.getElementById('duration').value),
+    schoolName: document.getElementById('location').value,
+    spaceName: document.getElementById('space').value,
+    attendees: parseInt(document.getElementById('attendees').value),
+    description: document.getElementById('description').value,
+    custodialSupport: document.getElementById('custodial').value,
+    maintenanceSupport: document.getElementById('maintenance').value,
+    uploadedFile: document.getElementById('fileUpload').files[0]?.name || null,
+    status: "Pending",
+    comments: "",
+    reviewerName: null
+  };
+  
+  // Add to events array
+  events.push(formData);
+  
+  // Simulate email notifications
+  console.log('=== EMAIL SIMULATION ===');
+  console.log(`To: ${formData.requestorEmail}`);
+  console.log(`Subject: Facility Request Submitted`);
+  console.log(`Body: Your request for ${formData.schoolName} - ${formData.spaceName} on ${formData.eventDate} has been submitted and is pending review.`);
+  console.log('========================');
+  
+  // Show success message
+  alert('Request submitted successfully! You will receive a confirmation email.');
+  
+  // Navigate to home
+  window.location.href = 'index.html';
+});
+
+7.4 Pending Requests Screen
+Page Title: "Pending Requests"
+Layout:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
++------------------------------------------+
+| [Home Button]                            |
+|                                          |
+| Pending Requests                         |
+|                                          |
+| +--------------------------------------+ |
+| | Requestor | Start  | End   | School | |
+| |           | Date   | Date  |        | |
+| |           |        |       |        | |
+| | Descrip. | Status |       | Review | |
+| | (preview)|        |       |        | |
+| +--------------------------------------+ |
+| | John     | 05/15/ | N/A   | Lincoln| |
+| | Smith    | 2026   |       | HS     | |
+| |          |        |       |        | |
+| | Youth    | Pending|       | [View] | |
+| | soccer...|        |       |        | |
+| +--------------------------------------+ |
+| | Maria    | 05/01/ |08/31/ | Lincoln| |
+| | Garcia   | 2026   | 2026  | HS     | |
+| |          |        |       |        | |
+| | Community| Pending|       | [View] | |
+| | band...  |        |       |        | |
+| +--------------------------------------+ |
+|                                          |
+| [< Previous]  [Next >]                   |
++------------------------------------------+
+Table Columns:
+ColumnDescriptionWidthRequestorName of person who submitted15%Start DateEvent date or start date (recurring)12%End DateEnd date (recurring only) or "N/A"12%SchoolSchool name18%DescriptionFirst 50 characters of description + "..."25%StatusStatus badge (always "Pending" on this screen)10%ReviewView button8%
+Filtering Logic:
+
+Show only events where status === "Pending"
+Show only events where schoolName === currentUser.schoolName
+
+Sorting:
+
+Default sort: By Start Date (earliest first)
+
+Pagination:
+
+If more than 10 requests, show pagination controls
+For prototype with limited data, pagination can be simulated (Previous/Next buttons present but may not be functional)
+
+Interactions:
+When "View" button clicked:
+
+Store selected event ID in sessionStorage: sessionStorage.setItem('reviewEventId', eventId)
+Navigate to Review Request screen: window.location.href = 'review-request.html'
+
+Implementation Example:
+javascript// In pending-requests.js
+
+function loadPendingRequests() {
+  const pendingEvents = events.filter(event => 
+    event.status === 'Pending' && 
+    event.schoolName === currentUser.schoolName
+  );
+  
+  // Sort by start date
+  pendingEvents.sort((a, b) => {
+    const dateA = a.eventDate || a.startDate;
+    const dateB = b.eventDate || b.startDate;
+    return new Date(dateA) - new Date(dateB);
+  });
+  
+  const tableBody = document.getElementById('pendingRequestsTable');
+  tableBody.innerHTML = '';
+  
+  pendingEvents.forEach(event => {
+    const row = document.createElement('tr');
+    
+    const startDate = event.eventDate || event.startDate;
+    const endDate = event.endDate || 'N/A';
+    const description = event.description.length > 50 
+      ? event.description.substring(0, 50) + '...' 
+      : event.description;
+    
+    row.innerHTML = `
+      <td>${event.requestorName}</td>
+      <td>${formatDate(startDate)}</td>
+      <td>${endDate !== 'N/A' ? formatDate(endDate) : 'N/A'}</td>
+      <td>${event.schoolName}</td>
+      <td>${description}</td>
+      <td><span class="status-badge pending">Pending</span></td>
+      <td><button onclick="viewRequest(${event.id})" class="btn-view">View</button></td>
+    `;
+    
+    tableBody.appendChild(row);
+  });
+}
+
+function viewRequest(eventId) {
+  sessionStorage.setItem('reviewEventId', eventId);
+  window.location.href = 'review-request.html';
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+}
+
+// Load requests on page load
+document.addEventListener('DOMContentLoaded', loadPendingRequests);
+
+7.5 Review Request Screen
+Page Title: "Request for Review"
+Layout:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
++------------------------------------------+
+| [Home Button] [Back to List]             |
+|                                          |
+| Request for Review                       |
+|                                          |
+| REQUEST DETAILS                          |
+| Name: John Smith                         |
+| Email: john@youthsoccer.org              |
+| Request Type: One-time                   |
+| Event Date: Saturday, May 15, 2026       |
+| Start Time: 9:00 AM                      |
+| Duration: 3 hours                        |
+| Location: Lincoln High School            |
+| Space: Gymnasium                         |
+| Attendees: 45                            |
+|                                          |
+| Event Description:                       |
+| Youth soccer tournament for ages 10-12   |
+|                                          |
+| Custodial Support:                       |
+| Setup and takedown of goals              |
+|                                          |
+| Maintenance Support:                     |
+| None                                     |
+|                                          |
+| Uploaded File:                           |
+| [📄 tournament_schedule.pdf]             |
+|                                          |
+| +------------------------------------+   |
+| |  CALENDAR PREVIEW - MAY 2026       |   |
+| |  S  M  T  W  T  F  S               |   |
+| |           1  2  3  4  5            |   |
+| |  6  7  8  9 10 11 12               |   |
+| | 13 14 [15] 16 17 18 19            |   |
+| | 20 21 22 23 24 25 26               |   |
+| | 27 28 29 30 31                     |   |
+| |                                    |   |
+| | [15] = This request                |   |
+| | Other events shown with indicators |   |
+| +------------------------------------+   |
+|                                          |
+| Internal Comments (optional):            |
+| [___________________________________]    |
+|                                          |
+| [Approve] [Deny] [Create Quote (grayed)]|
++------------------------------------------+
+Display Sections:
+1. Request Details (Read-Only)
+Display all information from the event object:
+
+Name, Email
+Request Type (One-time or Recurring)
+Event Date (or Start Date and End Date if recurring)
+Start Time, Duration
+Location (School), Space
+Number of Attendees
+Event Description
+Custodial Support
+Maintenance Support
+Uploaded File (if present) - displayed as clickable link with file icon
+
+Formatting:
+
+Use label: value format
+Clear visual hierarchy (bold labels, regular text for values)
+Adequate spacing between fields
+
+2. Calendar Preview
+
+Display mini calendar for the month of the event
+Highlight the requested date (bold border or different background)
+Show other existing events for that school on the calendar:
+
+Approved events: Small green dot on date
+Pending events: Small orange dot on date
+
+
+For prototype: Simplified calendar (can show just the requested date + a few sample events)
+
+3. Internal Comments Field
+
+Textarea for optional comments
+Placeholder text: "Add any internal notes about this request (optional)"
+Max 500 characters
+Comments are saved with the event when decision is made
+
+4. Decision Buttons
+Three buttons in a row at bottom:
+Approve Button:
+
+Green background
+Full functionality
+On click: Update status to "Approved", save comments, simulate emails, return to Pending Requests
+
+Deny Button:
+
+Red background
+Full functionality
+On click: Confirm with user, update status to "Denied", save comments, remove from calendar, archive, simulate emails, return to Pending Requests
+
+Create Quote Button:
+
+Blue/gray background
+Disabled/grayed out (for prototype)
+Cursor: not-allowed
+On click (if clicked): Show alert "Quote generation feature coming soon"
+
+Interactions:
+On page load:
+
+Retrieve event ID from sessionStorage: const eventId = sessionStorage.getItem('reviewEventId')
+Find event in events array: const event = events.find(e => e.id === eventId)
+Populate all fields with event data
+Build calendar preview showing month of event
+Mark requested date on calendar
+Show other events for same school on calendar
+
+When "Approve" clicked:
+
+Get comments from textarea
+Confirm action (optional): "Are you sure you want to approve this request?"
+Update event object:
+
+status = "Approved"
+comments = [entered comments]
+reviewerName = currentUser.name
+
+
+Simulate emails (console.log):
+
+To Requestor: "Your request has been approved"
+To Operations: Event details + custodial/maintenance needs
+To Energy Manager: Event details for HVAC scheduling
+
+
+Display success message: "Request approved. Notifications sent."
+Navigate to pending-requests.html
+
+When "Deny" clicked:
+
+Confirm: "Are you sure you want to deny this request? This action cannot be undone."
+If confirmed:
+
+Get comments from textarea
+Update event object:
+
+status = "Denied"
+comments = [entered comments]
+reviewerName = currentUser.name
+
+
+Simulate email to Requestor: "Your request has been denied. Reason: [comments]"
+Display success message: "Request denied. Notification sent."
+Navigate to pending-requests.html
+
+
+
+When "Create Quote" clicked:
+
+Display alert: "Quote generation feature is not available in this prototype."
+No other action
+
+When "Back to List" clicked:
+
+Check if comments field has unsaved text
+If yes: "You have unsaved comments. Are you sure you want to leave?"
+Navigate to pending-requests.html
+
+Implementation Example:
+javascript// In review-request.js
+
+let currentEvent = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+  const eventId = parseInt(sessionStorage.getItem('reviewEventId'));
+  currentEvent = events.find(e => e.id === eventId);
+  
+  if (!currentEvent) {
+    alert('Event not found');
+    window.location.href = 'pending-requests.html';
+    return;
+  }
+  
+  // Populate fields
+  document.getElementById('displayName').textContent = currentEvent.requestorName;
+  document.getElementById('displayEmail').textContent = currentEvent.requestorEmail;
+  document.getElementById('displayType').textContent = currentEvent.requestType;
+  
+  const eventDateDisplay = currentEvent.eventDate || currentEvent.startDate;
+  document.getElementById('displayDate').textContent = formatDateLong(eventDateDisplay);
+  
+  if (currentEvent.endDate) {
+    document.getElementById('endDateSection').style.display = 'block';
+    document.getElementById('displayEndDate').textContent = formatDateLong(currentEvent.endDate);
+  }
+  
+  document.getElementById('displayStartTime').textContent = formatTime(currentEvent.startTime);
+  document.getElementById('displayDuration').textContent = `${currentEvent.duration} hours`;
+  document.getElementById('displayLocation').textContent = currentEvent.schoolName;
+  document.getElementById('displaySpace').textContent = currentEvent.spaceName;
+  document.getElementById('displayAttendees').textContent = currentEvent.attendees;
+  document.getElementById('displayDescription').textContent = currentEvent.description;
+  document.getElementById('displayCustodial').textContent = currentEvent.custodialSupport || 'None';
+  document.getElementById('displayMaintenance').textContent = currentEvent.maintenanceSupport || 'None';
+  
+  if (currentEvent.uploadedFile) {
+    document.getElementById('fileSection').style.display = 'block';
+    document.getElementById('fileName').textContent = currentEvent.uploadedFile;
+  }
+  
+  // Build calendar preview
+  buildCalendarPreview(eventDateDisplay, currentEvent.schoolName);
+});
+
+function buildCalendarPreview(dateString, schoolName) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+  
+  // Simple calendar grid (can use library or build from scratch)
+  // Highlight the requested date
+  // Show indicators for other events on same school
+  
+  // For prototype: simplified version showing just the month with requested date highlighted
+  document.getElementById('calendarTitle').textContent = `${getMonthName(month)} ${year}`;
+  
+  // ... build calendar grid here ...
+  // Mark requested date with border or background
+  // Add small dots for other events (filter events by schoolName and month)
+}
+
+function handleApprove() {
+  if (confirm('Are you sure you want to approve this request?')) {
+    const comments = document.getElementById('comments').value;
+    
+    currentEvent.status = 'Approved';
+    currentEvent.comments = comments;
+    currentEvent.reviewerName = currentUser.name;
+    
+    // Simulate emails
+    console.log('=== EMAIL TO REQUESTOR ===');
+    console.log(`To: ${currentEvent.requestorEmail}`);
+    console.log(`Subject: Request Approved`);
+    console.log(`Body: Your facility use request has been approved.`);
+    console.log('==========================');
+    
+    console.log('=== EMAIL TO OPERATIONS ===');
+    console.log(`Event: ${currentEvent.description}`);
+    console.log(`Date: ${currentEvent.eventDate || currentEvent.startDate}`);
+    console.log(`Custodial: ${currentEvent.custodialSupport}`);
+    console.log(`Maintenance: ${currentEvent.maintenanceSupport}`);
+    console.log('===========================');
+    
+    console.log('=== EMAIL TO ENERGY MANAGER ===');
+    console.log(`HVAC needed for ${currentEvent.schoolName}`);
+    console.log(`Date: ${currentEvent.eventDate || currentEvent.startDate}`);
+    console.log(`Time: ${currentEvent.startTime}, Duration: ${currentEvent.duration} hours`);
+    console.log('================================');
+    
+    alert('Request approved. Notifications sent.');
+    window.location.href = 'pending-requests.html';
+  }
+}
+
+function handleDeny() {
+  if (confirm('Are you sure you want to deny this request? This action cannot be undone.')) {
+    const comments = document.getElementById('comments').value;
+    
+    currentEvent.status = 'Denied';
+    currentEvent.comments = comments;
+    currentEvent.reviewerName = currentUser.name;
+    
+    console.log('=== EMAIL TO REQUESTOR ===');
+    console.log(`To: ${currentEvent.requestorEmail}`);
+    console.log(`Subject: Request Denied`);
+    console.log(`Body: Your facility use request has been denied.`);
+    if (comments) {
+      console.log(`Reason: ${comments}`);
+    }
+    console.log('==========================');
+    
+    alert('Request denied. Notification sent.');
+    window.location.href = 'pending-requests.html';
+  }
+}
+
+function handleCreateQuote() {
+  alert('Quote generation feature is not available in this prototype.');
+}
+
+7.6 Calendar View Screen
+Page Title: "Facilities Reservation Calendar"
+Layout:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
++------------------------------------------+
+| [Home Button]                            |
+|                                          |
+| Facilities Reservation Calendar          |
+|                                          |
+| +-------------------+  +---------------+ |
+| |   CALENDAR        |  | Select        | |
+| |   MAY 2026        |  | Filters:      | |
+| |                   |  |               | |
+| | S M T W T F S     |  | Month/Year:   | |
+| |       1 2 3 4 5   |  | [May 2026 ▼]  | |
+| | 6 7 8 9 10 11 12  |  |               | |
+| |13 14[15]16 17 18  |  | School:       | |
+| |20 21 22 23 24 25  |  | [Lincoln HS▼] | |
+| |27 28 29 30 31     |  |               | |
+| |                   |  | Status:       | |
+| | [15] = 2 events   |  | ( ) All       | |
+| |                   |  | ( ) Pending   | |
+| +-------------------+  | ( ) Approved  | |
+|                        |               | |
+| EVENTS ON MAY 15:      | [Generate     | |
+|                        |  Report]      | |
+| 9:00 AM - 12:00 PM     | (grayed out)  | |
+| Gymnasium              +---------------+ |
+| Youth Soccer           |                  |
+| ✓ APPROVED             |                  |
+|                        |                  |
+| 2:00 PM - 4:00 PM      |                  |
+| Auditorium             |                  |
+| Community Band         |                  |
+| ⏱ PENDING              |                  |
++------------------------+------------------+
+Left Half: Calendar
+Calendar Grid:
+
+Standard month view (7 columns: Sunday-Saturday)
+Current month displayed by default
+Days with events indicated by:
+
+Bold text
+Small colored dots (green for approved, orange for pending)
+Hover shows count: "2 events"
+
+
+Requested date highlighted with border when clicked
+
+Calendar Navigation:
+
+Month name and year at top
+Previous/Next month arrows (optional for prototype)
+
+Event List Below Calendar:
+
+When user clicks a date, display all events for that date
+Each event shown as a card:
+
+  +----------------------------------+
+  | 9:00 AM - 12:00 PM              |
+  | Gymnasium                        |
+  | Youth Soccer Tournament          |
+  | ✓ APPROVED (green)               |
+  +----------------------------------+
+
+Status badge with icon:
+
+Approved: Green background, checkmark icon ✓
+Pending: Orange background, clock icon ⏱
+
+
+
+Right Half: Filters
+Filter Panel:
+Header: "Select Filters:"
+Month/Year Selector:
+
+Dropdown showing months and years
+Format: "May 2026", "June 2026", etc.
+Default: Current month
+
+School Selector:
+
+Dropdown showing schools
+For Principal: Only their school (Lincoln High School)
+Dropdown disabled or only shows one option
+
+Status Filter:
+
+Radio buttons (vertical)
+Options: All, Pending, Approved
+Default: All
+
+Generate Report Button:
+
+Below filters
+Grayed out/disabled for prototype
+On click: Alert "Report generation feature is not available in this prototype."
+
+Filter Application:
+
+Filters can auto-apply on change OR have an "Apply Filters" button
+For simplicity: Auto-apply on selection change
+
+Interactions:
+On page load:
+
+Get current month and year
+Filter events by:
+
+School: currentUser.schoolName
+Month: Current month
+Status: All (Pending + Approved)
+
+
+Build calendar grid
+Populate filter controls with current values
+
+When Month/Year changes:
+
+Get selected month/year
+Rebuild calendar for new month
+Update event display
+
+When School changes:
+
+Filter events by selected school
+Rebuild calendar
+Update event display
+(Note: For prototype with Principal, this may not change since they only have one school)
+
+When Status filter changes:
+
+Filter events by selected status
+Rebuild calendar (only show days with matching status events)
+Update event display
+
+When date clicked on calendar:
+
+Get selected date
+Filter events for that date
+Display event list below calendar
+Highlight selected date on calendar
+
+When "Generate Report" clicked:
+
+Display alert: "Report generation feature is not available in this prototype."
+
+Implementation Example:
+javascript// In calendar.js
+
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+let selectedDate = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+  initializeFilters();
+  buildCalendar();
+});
+
+function initializeFilters() {
+  // Set month/year dropdown to current month
+  document.getElementById('monthFilter').value = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+  
+  // School filter (for Principal - only their school)
+  document.getElementById('schoolFilter').value = currentUser.schoolName;
+  document.getElementById('schoolFilter').disabled = true; // Only one school
+  
+  // Status filter default
+  document.querySelector('input[name="statusFilter"][value="all"]').checked = true;
+  
+  // Add event listeners
+  document.getElementById('monthFilter').addEventListener('change', applyFilters);
+  document.querySelectorAll('input[name="statusFilter"]').forEach(radio => {
+    radio.addEventListener('change', applyFilters);
+  });
+}
+
+function applyFilters() {
+  // Get filter values
+  const monthYearValue = document.getElementById('monthFilter').value;
+  const [year, month] = monthYearValue.split('-').map(Number);
+  currentYear = year;
+  currentMonth = month - 1;
+  
+  const statusFilter = document.querySelector('input[name="statusFilter"]:checked').value;
+  
+  // Rebuild calendar with filters
+  buildCalendar(statusFilter);
+}
+
+function buildCalendar(statusFilter = 'all') {
+  // Filter events
+  const filteredEvents = events.filter(event => {
+    // School filter
+    if (event.schoolName !== currentUser.schoolName) {
+      return false;
+    }
+    
+    // Status filter
+    if (statusFilter !== 'all' && event.status !== statusFilter) {
+      return false;
+    }
+    
+    // Month filter
+    const eventDate = new Date(event.eventDate || event.startDate);
+    if (eventDate.getMonth() !== currentMonth || eventDate.getFullYear() !== currentYear) {
+      return false;
+    }
+    
+    return true;
+  });
+  
+  // Build calendar grid
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  const lastDay = new Date(currentYear, currentMonth + 1, 0);
+  const daysInMonth = lastDay.getDate();
+  const startingDayOfWeek = firstDay.getDay();
+  
+  const calendarGrid = document.getElementById('calendarGrid');
+  calendarGrid.innerHTML = '';
+  
+  // Day headers
+  const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  dayHeaders.forEach(day => {
+    const header = document.createElement('div');
+    header.className = 'calendar-header';
+    header.textContent = day;
+    calendarGrid.appendChild(header);
+  });
+  
+  // Blank cells before month starts
+  for (let i = 0; i < startingDayOfWeek; i++) {
+    const blank = document.createElement('div');
+    blank.className = 'calendar-cell blank';
+    calendarGrid.appendChild(blank);
+  }
+  
+  // Day cells
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const dayEvents = getEventsForDate(dateStr, filteredEvents);
+    
+    const cell = document.createElement('div');
+    cell.className = 'calendar-cell';
+    cell.textContent = day;
+    
+    if (dayEvents.length > 0) {
+      cell.classList.add('has-events');
+      
+      // Add status indicators
+      const hasApproved = dayEvents.some(e => e.status === 'Approved');
+      const hasPending = dayEvents.some(e => e.status === 'Pending');
+      
+      if (hasApproved) cell.classList.add('has-approved');
+      if (hasPending) cell.classList.add('has-pending');
+      
+      cell.addEventListener('click', () => displayEventsForDate(dateStr, dayEvents));
+    }
+    
+    calendarGrid.appendChild(cell);
+  }
+}
+
+function getEventsForDate(dateStr, eventsList) {
+  return eventsList.filter(event => {
+    if (event.requestType === 'One-time') {
+      return event.eventDate === dateStr;
+    } else {
+      // Recurring: check if dateStr is between start and end
+      return dateStr >= event.startDate && dateStr <= event.endDate;
+    }
+  });
+}
+
+function displayEventsForDate(dateStr, dayEvents) {
+  selectedDate = dateStr;
+  
+  const eventList = document.getElementById('eventList');
+  eventList.innerHTML = `<h3>Events on ${formatDateLong(dateStr)}</h3>`;
+  
+  if (dayEvents.length === 0) {
+    eventList.innerHTML += '<p>No events scheduled</p>';
+    return;
+  }
+  
+  dayEvents.forEach(event => {
+    const card = document.createElement('div');
+    card.className = `event-card status-${event.status.toLowerCase()}`;
+    
+    const endTime = calculateEndTime(event.startTime, event.duration);
+    
+    card.innerHTML = `
+      <div class="event-time">${formatTime(event.startTime)} - ${endTime}</div>
+      <div class="event-location">${event.spaceName}</div>
+      <div class="event-title">${event.description}</div>
+      <div class="event-status ${event.status.toLowerCase()}">
+        ${event.status === 'Approved' ? '✓' : '⏱'} ${event.status.toUpperCase()}
+      </div>
+    `;
+    
+    eventList.appendChild(card);
+  });
+}
+
+function calculateEndTime(startTime, duration) {
+  // Parse start time and add duration
+  const [hours, minutes] = startTime.split(':').map(Number);
+  const endHours = hours + duration;
+  return `${String(endHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+}
+
+function handleGenerateReport() {
+  alert('Report generation feature is not available in this prototype.');
+}
+
+7.7 Reference Documents Screen
+Page Title: "Facilities Reservation Reference Documents"
+Layout:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
++------------------------------------------+
+| [Home Button]                            |
+|                                          |
+| Facilities Reservation Reference         |
+| Documents                                |
+|                                          |
+| +--------------------------------------+ |
+| | Document Name        | Date    | View| |
+| +--------------------------------------+ |
+| | Facility Use         |01/15/26 |[View]|
+| | Guidelines           |         |     | |
+| +--------------------------------------+ |
+| | Pricing Policy       |01/15/26 |[View]|
+| +--------------------------------------+ |
+| | Safety Protocols     |02/01/26 |[View]|
+| +--------------------------------------+ |
++------------------------------------------+
+Table Columns:
+ColumnDescriptionWidthDocument NameName of the document60%DateUpload date (MM/DD/YY format)20%ViewButton to view document20%
+Data Source:
+
+Populated from referenceDocuments array
+Show all documents with status !== 'Archived' (or just show all for simplicity)
+
+Interactions:
+When "View" button clicked:
+
+Get document fileUrl from referenceDocuments array
+Open in new tab: window.open(fileUrl, '_blank')
+For prototype: Can open a sample PDF file or display a placeholder message
+
+Implementation Example:
+javascript// In reference-documents.js
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadDocuments();
+});
+
+function loadDocuments() {
+  const tableBody = document.getElementById('documentsTable');
+  tableBody.innerHTML = '';
+  
+  referenceDocuments.forEach(doc => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${doc.name}</td>
+      <td>${formatDate(doc.uploadDate)}</td>
+      <td><button onclick="viewDocument('${doc.fileUrl}')" class="btn-view">View</button></td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+function viewDocument(fileUrl) {
+  // Open sample PDF in new tab
+  window.open(fileUrl, '_blank');
+  
+  // Alternative for prototype if no actual PDFs:
+  // alert(`Opening document: ${fileUrl}`);
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}/${String(date.getFullYear()).substring(2)}`;
+}
+
+7.8 Archived Requests Screen
+Page Title: "Facilities Reservation Archived Requests"
+Layout:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
++------------------------------------------+
+| [Home Button]                            |
+|                                          |
+| Facilities Reservation Archived Requests |
+|                                          |
+| +--------------------------------------+ |
+| | Requestor|Start |End  |School|Descrip|
+| |          |Date  |Date |      |(prev.)|
+| |          |      |     |      |Status |
+| |          |      |     |      |Review |
+| +--------------------------------------+ |
+| | John     |05/15/|N/A  |Linc. |Youth  |
+| | Smith    | 2026 |     | HS   |soccer.|
+| |          |      |     |      |Denied |
+| |          |      |     |      |[View] |
+| +--------------------------------------+ |
+| | Maria    |03/10/|03/10|Linc. |Commun.|
+| | Garcia   | 2026 | 2026| HS   |event..|
+| |          |      |     |      |Appr.  |
+| |          |      |     |      |[View] |
+| +--------------------------------------+ |
+|                                          |
+| [< Previous]  [Next >]                   |
++------------------------------------------+
+Table Columns:
+ColumnDescriptionWidthRequestorName of person who submitted15%Start DateEvent date or start date12%End DateEnd date (recurring) or "N/A"12%SchoolSchool name (abbreviated if needed)15%DescriptionFirst 30 characters + "..."20%StatusStatus badge (Approved/Denied)13%ReviewView button13%
+Filtering Logic:
+
+Show only events where status === "Approved" OR status === "Denied"
+Show only events where schoolName === currentUser.schoolName
+Optionally: Show only events from past 5 years
+
+Sorting:
+
+Default sort: By Start Date (most recent first)
+
+Pagination:
+
+If more than 10 requests, show pagination controls
+For prototype: Can be simulated
+
+Interactions:
+When "View" button clicked:
+
+Store selected event ID in sessionStorage
+Navigate to a detail view (can reuse Review Request screen in read-only mode, or create new archived-detail.html)
+For prototype: Can just display alert with event details or navigate to review-request.html with viewing mode
+
+Implementation Example:
+javascript// In archived-requests.js
+
+function loadArchivedRequests() {
+  const archivedEvents = events.filter(event => 
+    (event.status === 'Approved' || event.status === 'Denied') && 
+    event.schoolName === currentUser.schoolName
+  );
+  
+  // Sort by start date (most recent first)
+  archivedEvents.sort((a, b) => {
+    const dateA = new Date(a.eventDate || a.startDate);
+    const dateB = new Date(b.eventDate || b.startDate);
+    return dateB - dateA; // Descending order
+  });
+  
+  const tableBody = document.getElementById('archivedRequestsTable');
+  tableBody.innerHTML = '';
+  
+  archivedEvents.forEach(event => {
+    const row = document.createElement('tr');
+    
+    const startDate = event.eventDate || event.startDate;
+    const endDate = event.endDate || 'N/A';
+    const description = event.description.length > 30 
+      ? event.description.substring(0, 30) + '...' 
+      : event.description;
+    
+    row.innerHTML = `
+      <td>${event.requestorName}</td>
+      <td>${formatDate(startDate)}</td>
+      <td>${endDate !== 'N/A' ? formatDate(endDate) : 'N/A'}</td>
+      <td>${event.schoolName}</td>
+      <td>${description}</td>
+      <td><span class="status-badge ${event.status.toLowerCase()}">${event.status}</span></td>
+      <td><button onclick="viewArchived(${event.id})" class="btn-view">View</button></td>
+    `;
+    
+    tableBody.appendChild(row);
+  });
+}
+
+function viewArchived(eventId) {
+  // For prototype: Can show alert or navigate to detail view
+  alert('Archived request detail view - Event ID: ' + eventId);
+  
+  // Alternative: Navigate to read-only review page
+  // sessionStorage.setItem('reviewEventId', eventId);
+  // sessionStorage.setItem('viewMode', 'archived');
+  // window.location.href = 'review-request.html';
+}
+
+document.addEventListener('DOMContentLoaded', loadArchivedRequests);
+
+8. Program Logic & Feature Behavior
+8.1 Feature 1: Submit Request
+Purpose: Allow Principal to submit facility use requests for their school
+Triggering Action: User clicks "Submit Request" from Home screen
+Program Flow:
+START
+  Display home screen
+  User clicks "Submit Request"
+  
+  Navigate to Submit Request screen
+  
+  SYSTEM AUTO-POPULATES:
+  - Name field with currentUser.name (read-only)
+  - Email field with currentUser.email (read-only)
+  
+  DEFAULT SETTINGS:
+  - Request Type: "One-time" selected
+  - End Date field: Hidden
+  
+  OUTPUT: Display form with auto-populated fields
+  
+  INPUT: User selects Request Type (One-time or Recurring)
+  
+  IF "Recurring" selected:
+    OUTPUT: Show End Date field
+    OUTPUT: Change "Event Date" label to "Start Date"
+  ELSE:
+    OUTPUT: Hide End Date field
+    OUTPUT: Keep "Event Date" label
+  
+  INPUT: User selects Location (school) from dropdown
+  
+  SYSTEM PROCESSING:
+  - Filter spaces array where space.schoolId matches selected school
+  - Populate Space dropdown with filtered spaces
+  
+  INPUT: User fills out all remaining fields
+  INPUT: User optionally uploads file
+  INPUT: User clicks "Submit"
+  
+  VALIDATION: Check all required fields and formats
+  
+  IF validation FAILS:
+    FOR EACH invalid field:
+      OUTPUT: Display error message below field
+      OUTPUT: Highlight field with red border
+    STOP (wait for user to correct)
+  
+  IF validation SUCCEEDS:
+    SYSTEM PROCESSING:
+    - Generate new event ID (events.length + 1)
+    - Create event object with all form data
+    - Set status = "Pending"
+    - Set comments = ""
+    - Set reviewerName = null
+    - Add event object to events array
+    
+    SIMULATE ACTIONS:
+    - Log email to requestor (console)
+    - Log email to Principal (console) - noting "You submitted this request"
+    
+    OUTPUT: Success message "Request submitted successfully!"
+    
+    Navigate to Home screen
+END
+Validation Rules:
+FieldRuleError MessageNameRequired (auto-filled)N/AEmailRequired, valid format (auto-filled)N/ARequest TypeRequired (default selected)"Please select request type"Event DateRequired, must be future date"Event date is required" / "Date must be in the future"End DateRequired if Recurring, must be > Event Date"End date is required" / "End date must be after start date"Start TimeRequired, valid time"Start time is required"DurationRequired, positive integer"Duration is required" / "Duration must be a positive number"LocationRequired, must select from dropdown"Please select a location"SpaceRequired, must select from dropdown"Please select a space"AttendeesRequired, positive integer"Number of attendees is required" / "Must be a positive number"DescriptionRequired, max 500 chars"Event description is required" / "Maximum 500 characters"File UploadOptional, .pdf/.doc/.docx/.xls/.xlsx, max 10MB"Invalid file type" / "File size exceeds 10MB"
+Data Created:
+New event object added to events array:
+javascript{
+  id: [auto-generated],
+  requestType: [One-time or Recurring],
+  requestorName: [currentUser.name],
+  requestorEmail: [currentUser.email],
+  eventDate: [selected date if one-time],
+  startDate: [selected date if recurring],
+  endDate: [selected end date if recurring],
+  startTime: [selected time],
+  duration: [entered number],
+  schoolName: [selected school],
+  spaceName: [selected space],
+  attendees: [entered number],
+  description: [entered text],
+  custodialSupport: [entered text or empty],
+  maintenanceSupport: [entered text or empty],
+  uploadedFile: [filename or null],
+  status: "Pending",
+  comments: "",
+  reviewerName: null
+}
+System Outputs:
+
+Success message displayed
+Console logs simulating emails
+Navigation to Home screen
+
+
+8.2 Feature 2: Review Request
+Purpose: Allow Principal to review pending requests and make approval decisions
+Triggering Action: User clicks "Review Requests" from Home, then selects specific request
+Program Flow:
+START
+  Display home screen
+  User clicks "Review Requests"
+  
+  Navigate to Pending Requests screen
+  
+  SYSTEM PROCESSING:
+  - Filter events array:
+    WHERE status = "Pending"
+    AND schoolName = currentUser.schoolName
+  - Sort by start date (earliest first)
+  
+  OUTPUT: Display table of pending requests
+  
+  INPUT: User clicks "View" button on specific request
+  
+  SYSTEM PROCESSING:
+  - Get event ID from clicked button
+  - Store in sessionStorage: reviewEventId
+  
+  Navigate to Review Request screen
+  
+  SYSTEM PROCESSING:
+  - Retrieve event ID from sessionStorage
+  - Find event in events array
+  - Get event month and year for calendar
+  - Filter events for same school and month
+  
+  OUTPUT: Display request details (all fields from event object)
+  OUTPUT: Display calendar preview for event month
+  OUTPUT: Highlight requested date on calendar
+  OUTPUT: Show other events on calendar (with status indicators)
+  OUTPUT: Display internal comments textarea (empty)
+  OUTPUT: Display three buttons: Approve, Deny, Create Quote (grayed)
+  
+  INPUT: User optionally enters comments
+  INPUT: User clicks decision button
+  
+  IF "Approve" clicked:
+    CONFIRM: "Are you sure you want to approve this request?"
+    
+    IF confirmed:
+      SYSTEM PROCESSING:
+      - Get comments from textarea
+      - Update event object:
+        status = "Approved"
+        comments = [entered text]
+        reviewerName = currentUser.name
+      
+      SIMULATE ACTIONS (console logs):
+      - Email to Requestor: "Request approved"
+      - Email to Operations: Event details + support needs
+      - Email to Energy Manager: HVAC scheduling info
+      
+      OUTPUT: Success message "Request approved. Notifications sent."
+      Navigate to Pending Requests screen
+  
+  IF "Deny" clicked:
+    CONFIRM: "Are you sure you want to deny this request? This cannot be undone."
+    
+    IF confirmed:
+      SYSTEM PROCESSING:
+      - Get comments from textarea
+      - Update event object:
+        status = "Denied"
+        comments = [entered text]
+        reviewerName = currentUser.name
+      
+      SIMULATE ACTION (console log):
+      - Email to Requestor: "Request denied" + reason (comments)
+      
+      OUTPUT: Success message "Request denied. Notification sent."
+      Navigate to Pending Requests screen
+  
+  IF "Create Quote" clicked:
+    OUTPUT: Alert "Quote generation feature is not available in this prototype."
+    STOP (no other action)
+  
+  IF "Back to List" clicked:
+    CHECK: Does comments field have unsaved text?
+    IF yes:
+      CONFIRM: "You have unsaved comments. Are you sure you want to leave?"
+    Navigate to Pending Requests screen
+END
+Data Modified:
+Event object in events array updated with:
+
+status changed to "Approved" or "Denied"
+comments set to entered text (or empty string if none)
+reviewerName set to currentUser.name
+
+System Outputs:
+
+Confirmation message based on decision
+Console logs simulating emails
+Navigation back to Pending Requests list
+
+
+8.3 Feature 3: Calendar View
+Purpose: Display and filter facility reservations on a visual calendar
+Triggering Action: User clicks "Calendar" from Home screen
+Program Flow:
+START
+  Display home screen
+  User clicks "Calendar"
+  
+  Navigate to Calendar View screen
+  
+  SYSTEM PROCESSING:
+  - Get current date
+  - Set initial filters:
+    Month/Year = current month
+    School = currentUser.schoolName
+    Status = "All"
+  - Filter events array:
+    WHERE schoolName = currentUser.schoolName
+    AND event month = current month
+    AND (status = "Pending" OR status = "Approved")
+  
+  OUTPUT: Display calendar grid for current month
+  OUTPUT: Display filter panel with current settings
+  OUTPUT: Indicate days with events (colored dots)
+  OUTPUT: Display "Generate Report" button (grayed out)
+  
+  OPTIONAL INTERACTION: User clicks on a date
+  
+  IF date clicked:
+    SYSTEM PROCESSING:
+    - Get selected date
+    - Filter events for that specific date
+    
+    OUTPUT: Display event list below calendar
+    FOR EACH event on that date:
+      OUTPUT: Event card showing:
+        - Time range (start time + duration)
+        - Space name
+        - Event description/title
+        - Status badge (green checkmark for Approved, orange clock for Pending)
+  
+  OPTIONAL INTERACTION: User changes Month/Year filter
+  
+  IF Month/Year changed:
+    SYSTEM PROCESSING:
+    - Get selected month/year
+    - Update currentMonth and currentYear variables
+    - Re-filter events for new month
+    - Rebuild calendar grid
+    
+    OUTPUT: Display calendar for new month
+  
+  OPTIONAL INTERACTION: User changes Status filter
+  
+  IF Status filter changed:
+    SYSTEM PROCESSING:
+    - Get selected status (All, Pending, or Approved)
+    - Re-filter events based on status
+    - Rebuild calendar grid
+    
+    OUTPUT: Display calendar with filtered events
+  
+  OPTIONAL INTERACTION: User clicks "Generate Report"
+  
+  IF "Generate Report" clicked:
+    OUTPUT: Alert "Report generation feature is not available in this prototype."
+    STOP (no other action)
+  
+  FILTER STATE MANAGEMENT:
+  - Store current filter selections in JavaScript variables
+  - Filters persist during current session only
+  - When user navigates away and returns, filters reset to defaults
+END
+Temporary State Managed:
+During calendar session, store in variables:
+
+currentMonth (0-11)
+currentYear (YYYY)
+selectedStatus ("all", "Pending", "Approved")
+selectedDate (YYYY-MM-DD) when user clicks a date
+
+System Outputs:
+
+Calendar grid with events indicated
+Event list for selected date
+Filtered views based on user selections
+Visual differentiation: Pending (orange + ⏱) vs Approved (green + ✓)
+
+
+9. Validation & Error Handling
+9.1 Field-Level Validation
+Validation occurs on:
+
+Field blur (when user leaves field)
+Form submission
+
+Data Type Validation:
+Data TypeValidation RuleError MessageTextRequired if specified, max length if specified"This field is required" / "Maximum [X] characters"EmailMust match pattern: ^[^\s@]+@[^\s@]+\.[^\s@]+$"Please enter a valid email address"NumberMust be valid integer, positive if specified"Please enter a valid number" / "Must be a positive number"DateMust be valid date, future date if specified"Please select a valid date" / "Date must be in the future"TimeMust be valid time format (HH:MM)"Please enter a valid time"FileType: .pdf, .doc, .docx, .xls, .xlsx; Size: max 10MB"Invalid file type" / "File size exceeds 10MB limit"
+Validation Functions:
+javascript// In validation.js
+
+function validateRequired(value, fieldName) {
+  if (!value || value.trim() === '') {
+    return `${fieldName} is required`;
+  }
+  return null;
+}
+
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return 'Please enter a valid email address';
+  }
+  return null;
+}
+
+function validateNumber(value, fieldName, mustBePositive = true) {
+  const num = Number(value);
+  if (isNaN(num)) {
+    return `${fieldName} must be a valid number`;
+  }
+  if (mustBePositive && num <= 0) {
+    return `${fieldName} must be a positive number`;
+  }
+  return null;
+}
+
+function validateDate(dateString, mustBeFuture = false) {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    return 'Please select a valid date';
+  }
+  if (mustBeFuture) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (date < today) {
+      return 'Date must be in the future';
+    }
+  }
+  return null;
+}
+
+function validateDateRange(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  if (end <= start) {
+    return 'End date must be after start date';
+  }
+  return null;
+}
+
+function validateFile(file) {
+  if (!file) return null; // File is optional
+  
+  const allowedTypes = ['application/pdf', 'application/msword', 
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+  
+  const allowedExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx'];
+  
+  const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+  
+  if (!allowedExtensions.includes(fileExtension)) {
+    return 'File must be PDF, Word, or Excel format';
+  }
+  
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  if (file.size > maxSize) {
+    return 'File size must not exceed 10MB';
+  }
+  
+  return null;
+}
+9.2 Form-Level Validation
+Complete form validation before submission:
+javascriptfunction validateSubmitRequestForm() {
+  let isValid = true;
+  
+  // Clear all previous errors
+  clearAllErrors();
+  
+  // Request Type (always selected, no validation needed)
+  
+  // Event Date
+  const eventDate = document.getElementById('eventDate').value;
+  let error = validateRequired(eventDate, 'Event date');
+  if (!error) {
+    error = validateDate(eventDate, true); // Must be future date
+  }
+  if (error) {
+    showError('eventDate', error);
+    isValid = false;
+  }
+  
+  // End Date (if recurring)
+  const requestType = document.querySelector('input[name="requestType"]:checked').value;
+  if (requestType === 'Recurring') {
+    const endDate = document.getElementById('endDate').value;
+    error = validateRequired(endDate, 'End date');
+    if (!error) {
+      error = validateDateRange(eventDate, endDate);
+    }
+    if (error) {
+      showError('endDate', error);
+      isValid = false;
+    }
+  }
+  
+  // Start Time
+  const startTime = document.getElementById('startTime').value;
+  error = validateRequired(startTime, 'Start time');
+  if (error) {
+    showError('startTime', error);
+    isValid = false;
+  }
+  
+  // Duration
+  const duration = document.getElementById('duration').value;
+  error = validateNumber(duration, 'Duration', true);
+  if (error) {
+    showError('duration', error);
+    isValid = false;
+  }
+  
+  // Location
+  const location = document.getElementById('location').value;
+  error = validateRequired(location, 'Location');
+  if (error) {
+    showError('location', error);
+    isValid = false;
+  }
+  
+  // Space
+  const space = document.getElementById('space').value;
+  error = validateRequired(space, 'Space');
+  if (error) {
+    showError('space', error);
+    isValid = false;
+  }
+  
+  // Attendees
+  const attendees = document.getElementById('attendees').value;
+  error = validateNumber(attendees, 'Number of attendees', true);
+  if (error) {
+    showError('attendees', error);
+    isValid = false;
+  }
+  
+  // Description
+  const description = document.getElementById('description').value;
+  error = validateRequired(description, 'Event description');
+  if (!error && description.length > 500) {
+    error = 'Description must not exceed 500 characters';
+  }
+  if (error) {
+    showError('description', error);
+    isValid = false;
+  }
+  
+  // File Upload (optional)
+  const fileInput = document.getElementById('fileUpload');
+  if (fileInput.files.length > 0) {
+    error = validateFile(fileInput.files[0]);
+    if (error) {
+      showError('fileUpload', error);
+      isValid = false;
+    }
+  }
+  
+  return isValid;
+}
+9.3 Error Display
+Show error message:
+javascriptfunction showError(fieldId, message) {
+  // Get or create error message element
+  let errorElement = document.getElementById(`${fieldId}-error`);
+  
+  if (!errorElement) {
+    errorElement = document.createElement('div');
+    errorElement.id = `${fieldId}-error`;
+    errorElement.className = 'error-message';
+    
+    const field = document.getElementById(fieldId);
+    field.parentNode.appendChild(errorElement);
+  }
+  
+  errorElement.textContent = message;
+  errorElement.style.display = 'block';
+  
+  // Highlight field
+  const field = document.getElementById(fieldId);
+  field.classList.add('error-field');
+}
+
+function clearError(fieldId) {
+  const errorElement = document.getElementById(`${fieldId}-error`);
+  if (errorElement) {
+    errorElement.style.display = 'none';
+    errorElement.textContent = '';
+  }
+  
+  const field = document.getElementById(fieldId);
+  if (field) {
+    field.classList.remove('error-field');
+  }
+}
+
+function clearAllErrors() {
+  const errorMessages = document.querySelectorAll('.error-message');
+  errorMessages.forEach(el => {
+    el.style.display = 'none';
+    el.textContent = '';
+  });
+  
+  const errorFields = document.querySelectorAll('.error-field');
+  errorFields.forEach(field => {
+    field.classList.remove('error-field');
+  });
+}
+CSS for error styling:
+css.error-field {
+  border: 2px solid #dc3545;
+  background-color: #fff5f5;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: none;
+}
+Unsaved Changes Warning:
+javascriptlet formHasChanges = false;
+
+// Track form changes
+document.getElementById('submitRequestForm').addEventListener('input', function() {
+  formHasChanges = true;
+});
+
+// Reset on successful submit
+document.getElementById('submitRequestForm').addEventListener('submit', function() {
+  if (validateSubmitRequestForm()) {
+    formHasChanges = false;
+  }
+});
+
+// Warn on navigation
+window.addEventListener('beforeunload', function(e) {
+  if (formHasChanges) {
+    e.preventDefault();
+    e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+    return e.returnValue;
+  }
+});
+
+10. Data Storage & State Management
+10.1 Conceptual Backend
+Database Type: Relational database (PostgreSQL conceptually)
+Data Organization:
+Data is organized into six primary tables:
+
+EVENT table stores all reservation requests
+USER table stores user information
+SCHOOL table stores school details
+SPACE table stores reservable spaces
+QUOTE table stores quote information (not implemented in prototype)
+REFERENCE_DOCUMENT table stores policy documents
+
+Relationships:
+
+EVENT references USER (via requestorId and reviewerId foreign keys)
+EVENT references SCHOOL (via schoolId foreign key)
+EVENT references SPACE (via spaceId foreign key)
+SPACE references SCHOOL (via schoolId foreign key)
+QUOTE references EVENT and USER (not implemented)
+REFERENCE_DOCUMENT references USER (uploader)
+
+SQL Operations (Conceptual):
+CREATE: INSERT statements add new records
+sqlINSERT INTO events (requestor_id, school_id, space_id, event_date, ...)
+VALUES (1, 1, 1, '2026-05-15', ...);
+READ: SELECT statements retrieve data
+sqlSELECT * FROM events 
+WHERE status = 'Pending' AND school_id = 1
+ORDER BY event_date ASC;
+UPDATE: UPDATE statements modify records
+sqlUPDATE events 
+SET status = 'Approved', comments = 'Looks good', reviewer_id = 1
+WHERE event_id = 5;
+ARCHIVE: UPDATE status rather than DELETE
+sqlUPDATE events 
+SET status = 'Denied'
+WHERE event_id = 5;
+-- Event retained in database for 5 years
+10.2 Prototype Data Simulation
+Since no backend is implemented, all data is stored in JavaScript arrays and persists only during browser session.
+Data Structure in js/data.js:
+javascript// Current user (Principal)
+const currentUser = {
+  id: 1,
+  name: "Dr. Sarah Johnson",
+  email: "sjohnson@lcsd.edu",
+  role: "Principal",
+  schoolName: "Lincoln High School"
+};
+
+// Schools
+const schools = [
+  { id: 1, name: "Lincoln High School", type: "High School" },
+  { id: 2, name: "Jefferson Middle School", type: "Middle School" },
+  { id: 3, name: "Washington Elementary", type: "Elementary School" }
+];
+
+// Spaces
+const spaces = [
+  { id: 1, schoolId: 1, name: "Gymnasium", capacity: 500 },
+  { id: 2, schoolId: 1, name: "Cafeteria", capacity: 300 },
+  { id: 3, schoolId: 1, name: "Auditorium", capacity: 400 },
+  { id: 4, schoolId: 1, name: "Room 200", capacity: 30 },
+  { id: 5, schoolId: 2, name: "Gymnasium", capacity: 350 },
+  { id: 6, schoolId: 2, name: "Cafeteria", capacity: 250 },
+  { id: 7, schoolId: 3, name: "Gymnasium", capacity: 200 }
+];
+
+// Events (sample data - 5-10 records)
+const events = [
+  {
+    id: 1,
+    requestType: "One-time",
+    requestorName: "John Smith",
+    requestorEmail: "john@youthsoccer.org",
+    eventDate: "2026-05-15",
+    startDate: null,
+    endDate: null,
+    startTime: "09:00",
+    duration: 3,
+    schoolName: "Lincoln High School",
+    spaceName: "Gymnasium",
+    attendees: 45,
+    description: "Youth soccer tournament for ages 10-12",
+    custodialSupport: "Setup and takedown of goals",
+    maintenanceSupport: "None",
+    uploadedFile: "tournament_schedule.pdf",
+    status: "Pending",
+    comments: "",
+    reviewerName: null
+  },
+  {
+    id: 2,
+    requestType: "Recurring",
+    requestorName: "Maria Garcia",
+    requestorEmail: "maria@communityband.org",
+    eventDate: null,
+    startDate: "2026-05-01",
+    endDate: "2026-08-31",
+    startTime: "18:00",
+    duration: 2,
+    schoolName: "Lincoln High School",
+    spaceName: "Auditorium",
+    attendees: 60,
+    description: "Community band practice every Tuesday evening",
+    custodialSupport: "None",
+    maintenanceSupport: "Ensure sound system is functional",
+    uploadedFile: null,
+    status: "Approved",
+    comments: "Approved for summer session. Sound system will be checked weekly.",
+    reviewerName: "Dr. Sarah Johnson"
+  },
+  {
+    id: 3,
+    requestType: "One-time",
+    requestorName: "Robert Chen",
+    requestorEmail: "rchen@lcsd.edu",
+    eventDate: "2026-05-20",
+    startDate: null,
+    endDate: null,
+    startTime: "14:00",
+    duration: 4,
+    schoolName: "Lincoln High School",
+    spaceName: "Cafeteria",
+    attendees: 100,
+    description: "Staff appreciation luncheon",
+    custodialSupport: "Setup tables and chairs, cleanup after event",
+    maintenanceSupport: "None",
+    uploadedFile: null,
+    status: "Pending",
+    comments: "",
+    reviewerName: null
+  },
+  {
+    id: 4,
+    requestType: "One-time",
+    requestorName: "Lisa Thompson",
+    requestorEmail: "lisa@artscouncil.org",
+    eventDate: "2026-04-10",
+    startDate: null,
+    endDate: null,
+    startTime: "19:00",
+    duration: 2,
+    schoolName: "Lincoln High School",
+    spaceName: "Auditorium",
+    attendees: 200,
+    description: "Spring concert performance",
+    custodialSupport: "Setup stage and seating",
+    maintenanceSupport: "Check lighting and sound systems",
+    uploadedFile: "concert_program.pdf",
+    status: "Denied",
+    comments: "Conflicts with scheduled school event. Please contact office to reschedule.",
+    reviewerName: "Dr. Sarah Johnson"
+  },
+  // Add 3-6 more sample events with various dates, schools, statuses
+];
+
+// Reference Documents
+const referenceDocuments = [
+  {
+    id: 1,
+    name: "Facility Use Guidelines",
+    uploadDate: "2026-01-15",
+    fileUrl: "assets/sample-documents/facility_guidelines.pdf"
+  },
+  {
+    id: 2,
+    name: "Pricing Policy",
+    uploadDate: "2026-01-15",
+    fileUrl: "assets/sample-documents/pricing_policy.pdf"
+  },
+  {
+    id: 3,
+    name: "Safety Protocols",
+    uploadDate: "2026-02-01",
+    fileUrl: "assets/sample-documents/safety_protocols.pdf"
+  }
+];
+
+// Make data globally accessible
+window.appData = {
+  currentUser,
+  schools,
+  spaces,
+  events,
+  referenceDocuments
+};
+CRUD Operations (Simulated):
+CREATE (Add new event):
+javascriptfunction createEvent(formData) {
+  const newEvent = {
+    id: events.length + 1,
+    ...formData,
+    status: "Pending",
+    comments: "",
+    reviewerName: null
+  };
+  
+  events.push(newEvent);
+  
+  // Simulate email notifications
+  console.log(`Email sent to ${newEvent.requestorEmail}: Request submitted`);
+  console.log(`Email sent to Principal: New request pending review`);
+  
+  return newEvent.id;
+}
+READ (Get pending requests):
+javascriptfunction getPendingRequests(schoolName) {
+  return events.filter(event => 
+    event.status === 'Pending' && 
+    event.schoolName === schoolName
+  );
+}
+UPDATE (Approve request):
+javascriptfunction approveEvent(eventId, comments, reviewerName) {
+  const event = events.find(e => e.id === eventId);
+  
+  if (event) {
+    event.status = 'Approved';
+    event.comments = comments;
+    event.reviewerName = reviewerName;
+    
+    // Simulate email notifications
+    console.log(`Email to ${event.requestorEmail}: Request approved`);
+    console.log(`Email to Operations: Event details for support`);
+    console.log(`Email to Energy Manager: HVAC scheduling needed`);
+    
+    return true;
+  }
+  
+  return false;
+}
+DELETE/ARCHIVE (Deny request):
+javascriptfunction denyEvent(eventId, comments, reviewerName) {
+  const event = events.find(e => e.id === eventId);
+  
+  if (event) {
+    event.status = 'Denied';
+    event.comments = comments;
+    event.reviewerName = reviewerName;
+    
+    // In real system: would remove from calendar display but retain in database
+    // In prototype: just change status flag
+    
+    console.log(`Email to ${event.requestorEmail}: Request denied - ${comments}`);
+    
+    return true;
+  }
+  
+  return false;
+}
+Limitations:
+
+No persistence: Data resets when page is refreshed
+No multi-user support: All changes exist only in current browser session
+No real emails: Notifications simulated with console.log
+No file storage: Only filename captured, not actual file
+Limited data volume: 5-10 sample events vs thousands in production system
+
+
+11. Implementation Guide for AI
+11.1 File Structure
+lcsd-prototype/
+├── index.html                 # Home screen
+├── submit-request.html        # Submit request form
+├── pending-requests.html      # Pending requests list
+├── review-request.html        # Review request detail
+├── calendar.html              # Calendar view
+├── reference-documents.html   # Reference documents
+├── archived-requests.html     # Archived requests
+│
+├── css/
+│   └── styles.css             # All CSS styles
+│
+├── js/
+│   ├── data.js                # Sample data (currentUser, schools, spaces, events, documents)
+│   ├── validation.js          # Validation functions
+│   ├── utils.js               # Utility functions (formatDate, formatTime, etc.)
+│   ├── submit-request.js      # Submit request logic
+│   ├── pending-requests.js    # Pending requests display
+│   ├── review-request.js      # Review request logic
+│   ├── calendar.js            # Calendar display and filtering
+│   ├── reference-documents.js # Reference documents display
+│   └── archived-requests.js   # Archived requests display
+│
+└── assets/
+    ├── lcsd-logo.png          # School district logo
+    └── sample-documents/      # Sample PDF files
+        ├── facility_guidelines.pdf
+        ├── pricing_policy.pdf
+        └── safety_protocols.pdf
+11.2 Sample Data Implementation
+Create comprehensive sample data in js/data.js as shown in section 10.2
+Requirements:
+
+At least 1 current user (Principal)
+At least 3 schools
+At least 6-8 spaces across schools
+At least 5-10 events with variety:
+
+Mix of Pending, Approved, Denied statuses
+Mix of One-time and Recurring types
+Various dates (past, current month, future months)
+Different schools and spaces
+
+
+At least 3 reference documents
+
+11.3 CSS Styling Requirements
+Create css/styles.css with the following specifications:
+Global Styles:
+css* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f4f4f4;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header with logo */
+.header {
+  text-align: center;
+  background-color: #fff;
+  padding: 20px;
+  border-bottom: 3px solid #003366; /* School colors */
+  margin-bottom: 30px;
+}
+
+.logo {
+  max-width: 150px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  color: #003366;
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+
+.header h2 {
+  color: #666;
+  font-size: 1.2rem;
+  font-weight: normal;
+}
+
+/* Page titles */
+.page-title {
+  color: #003366;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Home button */
+.home-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #003366;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.home-button:hover {
+  background-color: #005599;
+}
+Home Screen Buttons:
+css.button-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 600px;
+  margin: 40px auto;
+}
+
+.button-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.button-row.centered {
+  grid-template-columns: 1fr;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.nav-button {
+  padding: 30px 20px;
+  font-size: 1.1rem;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+  background-color: #005599;
+}
+
+.nav-button:active {
+  transform: scale(0.98);
+}
+Form Styles:
+css.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group input[type="time"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-group input[readonly] {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+/* Radio buttons side by side */
+.radio-group {
+  display: flex;
+  gap: 30px;
+}
+
+.radio-group label {
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Submit button */
+.btn-submit {
+  padding: 12px 40px;
+  font-size: 1.1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  margin: 30px auto 0;
+}
+
+.btn-submit:hover {
+  background-color: #218838;
+}
+
+/* Error styling */
+.error-field {
+  border: 2px solid #dc3545 !important;
+  background-color: #fff5f5;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 5px;
+  display: none;
+}
+Table Styles:
+csstable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+table thead {
+  background-color: #003366;
+  color: white;
+}
+
+table th,
+table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.btn-view {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-view:hover {
+  background-color: #0056b3;
+}
+Status Badges (CRITICAL - Visual Differentiation):
+css.status-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.875rem;
+}
+
+.status-badge.pending {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
+}
+
+.status-badge.pending::before {
+  content: '⏱ ';
+  font-size: 1.1em;
+}
+
+.status-badge.approved {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #28a745;
+}
+
+.status-badge.approved::before {
+  content: '✓ ';
+  font-size: 1.1em;
+}
+
+.status-badge.denied {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #dc3545;
+}
+
+.status-badge.denied::before {
+  content: '✗ ';
+  font-size: 1.1em;
+}
+
+/* Event cards (for calendar view) */
+.event-card {
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border-left: 5px solid;
+}
+
+.event-card.status-pending {
+  background-color: #fff3cd;
+  border-left-color: #ffc107;
+}
+
+.event-card.status-approved {
+  background-color: #d4edda;
+  border-left-color: #28a745;
+}
+
+.event-card .event-status {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.event-card .event-status.pending {
+  color: #856404;
+}
+
+.event-card .event-status.pending::before {
+  content: '⏱ ';
+}
+
+.event-card .event-status.approved {
+  color: #155724;
+}
+
+.event-card .event-status.approved::before {
+  content: '✓ ';
+}
+Review Request Buttons:
+css.decision-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.btn-approve {
+  padding: 12px 30px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-approve:hover {
+  background-color: #218838;
+}
+
+.btn-deny {
+  padding: 12px 30px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-deny:hover {
+  background-color: #c82333;
+}
+
+.btn-quote {
+  padding: 12px 30px;
+  background-color: #6c757d;
+  color: #ccc;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+Calendar Styles:
+css.calendar-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.calendar-header {
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+  background-color: #003366;
+  color: white;
+}
+
+.calendar-cell {
+  text-align: center;
+  padding: 15px;
+  border: 1px solid #ddd;
+  min-height: 60px;
+  cursor: pointer;
+  position: relative;
+}
+
+.calendar-cell.blank {
+  background-color: #f5f5f5;
+  cursor: default;
+}
+
+.calendar-cell.has-events {
+  background-color: #e6f2ff;
+  font-weight: bold;
+}
+
+.calendar-cell.has-approved::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #28a745;
+}
+
+.calendar-cell.has-pending::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ffc107;
+}
+
+.calendar-cell:hover:not(.blank) {
+  background-color: #cce5ff;
+}
+
+.filter-panel {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: fit-content;
+}
+
+.filter-panel h3 {
+  margin-bottom: 20px;
+  color: #003366;
+}
+
+.filter-panel .form-group {
+  margin-bottom: 15px;
+}
+
+.btn-report {
+  width: 100%;
+  padding: 12px;
+  background-color: #6c757d;
+  color: #ccc;
+  border: none;
+  border-radius: 5px;
+  cursor: not-allowed;
+  opacity: 0.6;
+  margin-top: 20px;
+}
+Responsive Design:
+css@media (max-width: 768px) {
+  .button-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .calendar-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .decision-buttons {
+    flex-direction: column;
+  }
+  
+  .decision-buttons button {
+    width: 100%;
+  }
+}
+11.4 JavaScript Implementation
+Key implementation points:
+
+Load sample data on every page:
+
+html   <script src="js/data.js"></script>
+
+Use consistent function naming:
+
+loadX() for displaying data
+handleX() for user actions
+validateX() for validation
+formatX() for formatting
+
+
+Console logging for simulated actions:
+
+javascript   console.log('=== EMAIL SIMULATION ===');
+   console.log(`To: ${email}`);
+   console.log(`Subject: ${subject}`);
+   console.log(`Body: ${body}`);
+   console.log('========================');
+
+SessionStorage for passing data between pages:
+
+javascript   // On pending-requests.html
+   sessionStorage.setItem('reviewEventId', eventId);
+   
+   // On review-request.html
+   const eventId = sessionStorage.getItem('reviewEventId');
+
+Navigation functions:
+
+javascript   function navigateTo(page) {
+     window.location.href = page;
+   }
+   
+   function goHome() {
+     window.location.href = 'index.html';
+   }
+11.5 Testing Checklist
+Before considering prototype complete, verify:
+Submit Request:
+
+ Page loads with auto-populated Name and Email (read-only)
+ Request Type toggles between One-time and Recurring
+ End Date field shows/hides based on Request Type
+ Location dropdown populated from schools array
+ Space dropdown filters based on selected Location
+ All validation rules work (required fields, date logic, file upload)
+ Error messages display correctly next to invalid fields
+ Form submission adds event to events array with status "Pending"
+ Console shows simulated email logs
+ Success message displays
+ Navigates to Home after submission
+
+Pending Requests:
+
+ Page shows only Pending events for currentUser.schoolName
+ Table displays all required columns (Requestor, Start Date, End Date, School, Description, Status, Review)
+ Description text truncated with "..." if over 50 chars
+ Dates formatted correctly (MM/DD/YYYY)
+ View button stores eventId and navigates to Review Request
+
+Review Request:
+
+ Page retrieves correct event from sessionStorage
+ All request details display correctly
+ Calendar preview shows for event month
+ Requested date highlighted on calendar
+ Other events for same school shown on calendar
+ Internal comments textarea functional
+ Approve button updates status, logs emails, shows confirmation
+ Deny button prompts confirmation, updates status, logs email
+ Create Quote button is grayed out and shows alert when clicked
+ Back to List warns if unsaved comments
+
+Calendar View:
+
+ Calendar displays current month by default
+ Events filtered to currentUser.schoolName only
+ Days with events indicated (colored dots or highlighting)
+ Clicking date displays event list below calendar
+ Event cards show time, space, description, status badge
+ Status badges use both color and icon (Pending: orange + ⏱, Approved: green + ✓)
+ Month/Year filter rebuilds calendar for selected month
+ Status filter (All/Pending/Approved) works correctly
+ School dropdown disabled (only shows Principal's school)
+ Generate Report button grayed out and shows alert
+
+Reference Documents:
+
+ Page displays all documents from referenceDocuments array
+ Table shows Document Name, Date, View button
+ View button opens sample PDF in new tab (or shows alert)
+
+Archived Requests:
+
+ Page shows only Approved or Denied events
+ Events filtered to currentUser.schoolName
+ Table displays all required columns
+ Sorted by date (most recent first)
+ View button functional (shows alert or detail view)
+
+General:
+
+ Logo displays on all pages
+ "Local County School District" text centered below logo on all pages
+ Home button returns to Home from all screens
+ Consistent styling across all pages
+ Responsive design works on different screen sizes
+ No JavaScript errors in console (except expected simulation logs)
+ Page refresh resets data to original sample set (expected behavior)
+
+
+12. Appendix
+12.1 Use Case Summaries
+UC-Request 1: Submit One-Time Event Request
+
+Actor: Principal (submitting as requestor)
+Trigger: User clicks "Submit Request"
+Main Flow: Select one-time, fill form, validate, submit, receive confirmation
+Postcondition: Request created with Pending status, notifications sent
+
+UC-Request 2: Submit Recurring Event Request
+
+Actor: Principal
+Trigger: User clicks "Submit Request"
+Main Flow: Select recurring, fill form with start/end dates, validate, submit
+Postcondition: Recurring request created with Pending status
+
+UC-Review 1: Review and Approve Request
+
+Actor: Principal
+Trigger: User clicks "Review Requests" then selects specific request
+Main Flow: View details, add comments, click Approve, notifications sent
+Postcondition: Request status = Approved, appears on calendar
+
+UC-Review 2: Review and Deny Request
+
+Actor: Principal
+Trigger: User reviews pending request
+Main Flow: View details, add comments/reason, click Deny
+Postcondition: Request status = Denied, archived, removed from calendar
+
+UC-Calendar 1: View Calendar
+
+Actor: Principal
+Trigger: User clicks "Calendar"
+Main Flow: System displays events for user's school
+Postcondition: Calendar visible with events
+
+UC-Calendar 2: Filter Calendar
+
+Actor: Principal
+Trigger: User changes filter selections
+Main Flow: Select month, status; system refreshes display
+Postcondition: Filtered calendar view
+
+UC-Documentation 1: View Reference Documents
+
+Actor: Principal
+Trigger: User clicks "Documents"
+Main Flow: Select document, view in new tab
+Postcondition: Document viewed
+
+UC-Documentation 2: View Archived Requests
+
+Actor: Principal
+Trigger: User clicks "Archived Requests"
+Main Flow: View list, select specific request
+Postcondition: Historical request viewed
+
+12.2 Design Goals
+
+Accessibility: Follow ADA guidelines, visual differentiation using color + icons
+Compliance: Conform to LCSD policies
+Portability: Consistent behavior across devices/browsers
+Reliability: Simulate 24/7 availability (conceptually)
+Security: Demonstrate role-based access controls (conceptually)
+Usability: User-friendly, intuitive, all actions within 3 clicks
+
+12.3 Glossary
+Administrative User: Principal, Operations Staff, or Energy Manager with elevated permissions
+Approved: Status indicating request has been approved and event is scheduled
+Archived: Denied or past events retained for historical reference
+Conceptual Backend: Design of how data would be stored/managed if system were fully implemented
+Duration: Length of event in hours
+Event: A facility reservation request (pending, approved, or denied)
+LCSD: Local County School District
+One-time Event: Single occurrence reservation
+Pending: Status indicating request awaiting review
+Principal: School administrator responsible for approving facility use
+Prototype: Front-end-only demonstration of system functionality
+Quote Pending: Status indicating long-term request requires pricing quote
+Recurring Event: Reservation repeating over date range
+Reference Document: Policy or guideline document available to all users
+Requestor: Person submitting facility use request
+Space: Specific reservable area within a school (gym, cafeteria, room)
+Status: Current state of request (Pending, Approved, Denied, Quote Pending, Quote Sent)
+
+END OF PRODUCT REQUIREMENTS DOCUMENT
