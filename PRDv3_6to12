@@ -1,0 +1,1524 @@
+6. Data Model
+6.1 Entity Definitions
+The system manages six primary entities. For the prototype, these are represented as JavaScript objects.
+EVENT
+Stores all facility reservation requests.
+Attributes:
+
+EV_ID (Number): Unique identifier
+EV_Frequency (Text): "One-time" or "Long-term"
+EV_RequestorID (Number): USER_ID for requestor
+EV_ReviewerID (Number): USER_ID for last user to update EV_Status
+EV_Organization (Text): Name of organization associated with event
+EV_OneTimeDate (Date): Date for one-time reservation
+EV_LongTermStartDate (Date): Start date for long-term reservation
+EV_LongTermEndDate (Date): End date for long-term reservation
+EV_StartTime (Time): Start time for event
+EV_EndTime (Time): End time for event
+EV_SchoolID (Number): SCH_ID for event school
+EV_SpaceID (Number): SPACE_ID for event space
+EV_Attendees (Number): Expected number of attendees
+EV_Description (Text): Description of event
+EV_Custodial (Text): Requested custodial support
+EV_Maintenance (Text): Requested maintenance support
+EV_Files (File): Files uploaded by contact
+EV_Status (Text): "Pending", "Approved", "Quote Pending", "Quote Sent", "Denied"
+EV_Comments (Text): Comments added by Administrative Users
+
+QUOTE
+Stores quote details for paid facility contracts.
+Attributes:
+
+QUOTE_ID (Number): Unique identifier
+QUOTE_EventID (Number): EVENT_ID for associated event
+QUOTE_CreatorID (Number): USER_ID for quote creator
+QUOTE_Custodial (Number): Amount quoted for custodial services
+QUOTE_Maintenance (Number): Amount quoted for maintenance services
+QUOTE_MiscFees (Number): Amount quoted for taxes, fees, etc.
+QUOTE_Hourly (Number): Amount quoted for hourly use of facility
+QUOTE_Status (Text): "Pending", "Accepted", "Denied"
+
+REFERENCE_DOCUMENT
+Stores reference documents for system users.
+Attributes:
+
+DOC_ID (Number): Unique identifier
+DOC_Name (Text): Name of document
+DOC_Status (Text): "Current" or "Archived"
+DOC_UploaderID (Number): USER_ID of employee who uploaded
+
+SCHOOL
+Stores information about LCSD schools.
+Attributes:
+
+SCH_ID (Number): Unique identifier
+SCH_Name (Text): Name of school
+SCH_Type (Text): "High School", "Middle School", "Elementary School", "K-12", "Special Programs"
+SCH_StreetAddress (Text): Street number and name for school
+SCH_City (Text): City name where school is located
+SCH_Zip (Text): ZIP code for school
+SCH_Status (Text): "Active" or "Inactive"
+SCH_User (Text): USER_ID for employee users assigned to school
+
+SPACE
+Stores reservable spaces within schools.
+Attributes:
+
+SPACE_ID (Number): Unique identifier
+SPACE_SchoolID (Number): SCH_ID for space's school
+SPACE_Name (Text): Description of space (e.g., "Room 200", "Gym")
+SPACE_Capacity (Number): Maximum capacity for space
+SPACE_Status (Text): "Available" or "Unavailable"
+
+USER
+Stores information about all individuals who interact with the system.
+Attributes:
+
+USER_ID (Number): Unique identifier
+USER_Type (Text): "Public User", "LCSD Employee", "Principal", "Operations Department Staff", "Energy Manager"
+USER_Name (Text): Name of user
+USER_Email (Text): Email for user
+USER_Phone (Text): Phone number for user
+USER_School (Text): Schools associated with user (can be NULL for system-wide users or public users)
+USER_Status (Text): "Active" or "Inactive"
+
+6.2 Entity Relationships
+Conceptual Relationships:
+
+User requests Event → One-to-many (via EV_RequestorID)
+User reviews Event → One-to-many (via EV_ReviewerID)
+User creates Quote → One-to-many (via QUOTE_CreatorID)
+Quote is generated for Event → One-to-one (via QUOTE_EventID)
+School contains Space → One-to-many (via SPACE_SchoolID)
+School hosts Event → One-to-many (via EV_SchoolID)
+Space holds Event → One-to-many (via EV_SpaceID)
+User is assigned to School → One-to-many (via USER_School)
+User uploads Reference Document → One-to-many (via DOC_UploaderID)
+
+For prototype: Relationships managed through matching IDs in JavaScript objects.
+6.3 Sample Data Structure
+Sample data will be defined in js/data.js as JavaScript arrays:
+javascript// Sample current user (Principal)
+const currentUser = {
+  USER_ID: 1,
+  USER_Name: "Dr. Sarah Johnson",
+  USER_Email: "sjohnson@lcsd.edu",
+  USER_Type: "Principal",
+  USER_School: "Lincoln High School",
+  USER_Phone: "(555) 234-5678",
+  USER_Status: "Active"
+};
+
+// Sample schools
+const schools = [
+  { 
+    SCH_ID: 1, 
+    SCH_Name: "Lincoln High School", 
+    SCH_Type: "High School",
+    SCH_StreetAddress: "123 Main Street",
+    SCH_City: "Beaufort",
+    SCH_Zip: "29902",
+    SCH_Status: "Active",
+    SCH_User: "1"
+  },
+  { 
+    SCH_ID: 2, 
+    SCH_Name: "Jefferson Middle School", 
+    SCH_Type: "Middle School",
+    SCH_StreetAddress: "456 Oak Avenue",
+    SCH_City: "Beaufort",
+    SCH_Zip: "29902",
+    SCH_Status: "Active",
+    SCH_User: null
+  },
+  { 
+    SCH_ID: 3, 
+    SCH_Name: "Washington Elementary", 
+    SCH_Type: "Elementary School",
+    SCH_StreetAddress: "789 Pine Road",
+    SCH_City: "Beaufort",
+    SCH_Zip: "29906",
+    SCH_Status: "Active",
+    SCH_User: null
+  }
+];
+
+// Sample spaces
+const spaces = [
+  { SPACE_ID: 1, SPACE_SchoolID: 1, SPACE_Name: "Gymnasium", SPACE_Capacity: 500, SPACE_Status: "Available" },
+  { SPACE_ID: 2, SPACE_SchoolID: 1, SPACE_Name: "Cafeteria", SPACE_Capacity: 300, SPACE_Status: "Available" },
+  { SPACE_ID: 3, SPACE_SchoolID: 1, SPACE_Name: "Auditorium", SPACE_Capacity: 400, SPACE_Status: "Available" },
+  { SPACE_ID: 4, SPACE_SchoolID: 1, SPACE_Name: "Room 200", SPACE_Capacity: 30, SPACE_Status: "Available" },
+  { SPACE_ID: 5, SPACE_SchoolID: 2, SPACE_Name: "Gymnasium", SPACE_Capacity: 350, SPACE_Status: "Available" },
+  { SPACE_ID: 6, SPACE_SchoolID: 2, SPACE_Name: "Cafeteria", SPACE_Capacity: 250, SPACE_Status: "Available" },
+  { SPACE_ID: 7, SPACE_SchoolID: 3, SPACE_Name: "Gymnasium", SPACE_Capacity: 200, SPACE_Status: "Available" }
+];
+
+// Sample events (5-10 records with various statuses)
+const events = [
+  {
+    EV_ID: 1,
+    EV_Frequency: "One-time",
+    EV_RequestorID: 101,
+    EV_ReviewerID: null,
+    EV_Organization: "Youth Soccer League",
+    EV_OneTimeDate: "2026-05-15",
+    EV_LongTermStartDate: null,
+    EV_LongTermEndDate: null,
+    EV_StartTime: "09:00",
+    EV_EndTime: "12:00",
+    EV_SchoolID: 1,
+    EV_SpaceID: 1,
+    EV_Attendees: 45,
+    EV_Description: "Youth soccer tournament for ages 10-12",
+    EV_Custodial: "Setup and takedown of goals",
+    EV_Maintenance: "None",
+    EV_Files: "tournament_schedule.pdf",
+    EV_Status: "Pending",
+    EV_Comments: ""
+  },
+  {
+    EV_ID: 2,
+    EV_Frequency: "Long-term",
+    EV_RequestorID: 102,
+    EV_ReviewerID: 1,
+    EV_Organization: "Community Band",
+    EV_OneTimeDate: null,
+    EV_LongTermStartDate: "2026-05-01",
+    EV_LongTermEndDate: "2026-08-31",
+    EV_StartTime: "18:00",
+    EV_EndTime: "20:00",
+    EV_SchoolID: 1,
+    EV_SpaceID: 3,
+    EV_Attendees: 60,
+    EV_Description: "Community band practice every Tuesday evening",
+    EV_Custodial: "None",
+    EV_Maintenance: "Ensure sound system is functional",
+    EV_Files: null,
+    EV_Status: "Approved",
+    EV_Comments: "Approved for summer session. Sound system will be checked weekly."
+  },
+  {
+    EV_ID: 3,
+    EV_Frequency: "One-time",
+    EV_RequestorID: 103,
+    EV_ReviewerID: null,
+    EV_Organization: "LCSD Staff",
+    EV_OneTimeDate: "2026-05-20",
+    EV_LongTermStartDate: null,
+    EV_LongTermEndDate: null,
+    EV_StartTime: "14:00",
+    EV_EndTime: "18:00",
+    EV_SchoolID: 1,
+    EV_SpaceID: 2,
+    EV_Attendees: 100,
+    EV_Description: "Staff appreciation luncheon",
+    EV_Custodial: "Setup tables and chairs, cleanup after event",
+    EV_Maintenance: "None",
+    EV_Files: null,
+    EV_Status: "Pending",
+    EV_Comments: ""
+  },
+  {
+    EV_ID: 4,
+    EV_Frequency: "One-time",
+    EV_RequestorID: 104,
+    EV_ReviewerID: 1,
+    EV_Organization: "Community Arts Council",
+    EV_OneTimeDate: "2026-04-10",
+    EV_LongTermStartDate: null,
+    EV_LongTermEndDate: null,
+    EV_StartTime: "19:00",
+    EV_EndTime: "21:00",
+    EV_SchoolID: 1,
+    EV_SpaceID: 3,
+    EV_Attendees: 200,
+    EV_Description: "Spring concert performance",
+    EV_Custodial: "Setup stage and seating",
+    EV_Maintenance: "Check lighting and sound systems",
+    EV_Files: "concert_program.pdf",
+    EV_Status: "Denied",
+    EV_Comments: "Conflicts with scheduled school event. Please contact office to reschedule."
+  },
+  {
+    EV_ID: 5,
+    EV_Frequency: "One-time",
+    EV_RequestorID: 105,
+    EV_ReviewerID: null,
+    EV_Organization: "Local Basketball League",
+    EV_OneTimeDate: "2026-05-22",
+    EV_LongTermStartDate: null,
+    EV_LongTermEndDate: null,
+    EV_StartTime: "10:00",
+    EV_EndTime: "14:00",
+    EV_SchoolID: 1,
+    EV_SpaceID: 1,
+    EV_Attendees: 75,
+    EV_Description: "Youth basketball tournament championship games",
+    EV_Custodial: "Floor cleaning after event",
+    EV_Maintenance: "Check scoreboard functionality",
+    EV_Files: null,
+    EV_Status: "Pending",
+    EV_Comments: ""
+  }
+];
+
+// Sample users (for requestor reference)
+const users = [
+  {
+    USER_ID: 1,
+    USER_Name: "Dr. Sarah Johnson",
+    USER_Email: "sjohnson@lcsd.edu",
+    USER_Type: "Principal",
+    USER_Phone: "(555) 234-5678",
+    USER_School: "Lincoln High School",
+    USER_Status: "Active"
+  },
+  {
+    USER_ID: 101,
+    USER_Name: "John Smith",
+    USER_Email: "john@youthsoccer.org",
+    USER_Type: "Public User",
+    USER_Phone: "(555) 123-4567",
+    USER_School: null,
+    USER_Status: "Active"
+  },
+  {
+    USER_ID: 102,
+    USER_Name: "Maria Garcia",
+    USER_Email: "maria@communityband.org",
+    USER_Type: "Public User",
+    USER_Phone: "(555) 345-6789",
+    USER_School: null,
+    USER_Status: "Active"
+  }
+];
+
+// Sample reference documents
+const referenceDocuments = [
+  {
+    DOC_ID: 1,
+    DOC_Name: "Facility Use Guidelines",
+    DOC_Status: "Current",
+    DOC_UploaderID: 1,
+    uploadDate: "2026-01-15",
+    fileUrl: "assets/sample-documents/facility_guidelines.pdf"
+  },
+  {
+    DOC_ID: 2,
+    DOC_Name: "Pricing Policy",
+    DOC_Status: "Current",
+    DOC_UploaderID: 1,
+    uploadDate: "2026-01-15",
+    fileUrl: "assets/sample-documents/pricing_policy.pdf"
+  },
+  {
+    DOC_ID: 3,
+    DOC_Name: "Safety Protocols",
+    DOC_Status: "Current",
+    DOC_UploaderID: 1,
+    uploadDate: "2026-02-01",
+    fileUrl: "assets/sample-documents/safety_protocols.pdf"
+  }
+];
+
+// Make data globally accessible
+window.appData = {
+  currentUser,
+  schools,
+  spaces,
+  events,
+  users,
+  referenceDocuments
+};
+
+7. User Interface Specifications
+7.1 Global UI Elements
+Every screen includes:
+Header Section:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
+|  (Centered, consistent across pages)     |
++------------------------------------------+
+Page Title:
+Below header, each page displays its specific title:
+
+"Facilities Reservation Request Form"
+"Pending Requests"
+"Request for Review"
+"Facilities Reservation Calendar"
+"Facilities Reservation Reference Documents"
+"Facilities Reservation Archived Requests"
+
+Navigation:
+
+Home button/link on all screens (except Home)
+Consistent styling and positioning
+
+
+7.2 Home Screen
+Page Title: None (just logo and district name)
+Layout:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
+|        Facilities Reservations           |
++------------------------------------------+
+|                                          |
+|   +----------------+  +----------------+ |
+|   | Submit Request |  |   Documents    | |
+|   +----------------+  +----------------+ |
+|                                          |
+|   +----------------+  +----------------+ |
+|   |Review Requests |  |   Archived     | |
+|   |                |  |   Requests     | |
+|   +----------------+  +----------------+ |
+|                                          |
+|           +----------------+             |
+|           |    Calendar    |             |
+|           +----------------+             |
+|                                          |
++------------------------------------------+
+Button Grid:
+
+Row 1: Submit Request, Documents (side by side)
+Row 2: Review Requests, Archived Requests (side by side)
+Row 3: Calendar (centered, spans width)
+
+Interactions:
+
+Click "Submit Request" → Navigate to submit-request.html
+Click "Documents" → Navigate to reference-documents.html
+Click "Review Requests" → Navigate to pending-requests.html
+Click "Archived Requests" → Navigate to archived-requests.html
+Click "Calendar" → Navigate to calendar.html
+
+
+7.3 Submit Request Screen
+Page Title: "Facilities Reservation Request Form"
+Layout:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
++------------------------------------------+
+| [Home Button]                            |
+|                                          |
+| Facilities Reservation Request Form      |
+|                                          |
+| Request Type:                            |
+| ( ) One-time    ( ) Long-term            |
+|                                          |
+| Name: [Dr. Sarah Johnson]                |
+| (auto-populated, read-only)              |
+|                                          |
+| Email: [sjohnson@lcsd.edu]               |
+| (auto-populated, read-only)              |
+|                                          |
+| Event Date: [__________] (Date picker)   |
+|                                          |
+| -- IF Long-term selected --              |
+| End Date: [__________] (Date picker)     |
+|                                          |
+| Start Time: [__________] (Time picker)   |
+|                                          |
+| End Time: [__________] (Time picker)     |
+|                                          |
+| Location: [Dropdown - Schools]           |
+|                                          |
+| Space: [Dropdown - Spaces]               |
+|                                          |
+| Number of Attendees: [__________]        |
+|                                          |
+| Event Description:                       |
+| [________________________________]       |
+| [________________________________]       |
+|                                          |
+| Requested Custodial Support:             |
+| [________________________________]       |
+|                                          |
+| Requested Maintenance Support:           |
+| [________________________________]       |
+|                                          |
+| File Upload: [Choose File]               |
+|                                          |
+|            [Submit]                      |
++------------------------------------------+
+Field Specifications:
+FieldTypeRequiredValidationMaps to AttributeRequest TypeRadio buttonsYesMust select oneEV_FrequencyNameText (read-only)YesN/ADerived from currentUser.USER_NameEmailEmail (read-only)YesN/ADerived from currentUser.USER_EmailEvent DateDate pickerYesMust be future dateEV_OneTimeDate (one-time) or EV_LongTermStartDate (long-term)End DateDate pickerConditionalMust be after Event DateEV_LongTermEndDateStart TimeTime pickerYesValid time formatEV_StartTimeEnd TimeTime pickerYesMust be after Start TimeEV_EndTimeLocationDropdownYesMust select from listEV_SchoolIDSpaceDropdownYesMust select from listEV_SpaceIDNumber of AttendeesNumberYesMust be positive integerEV_AttendeesEvent DescriptionTextareaYesMax 500 charactersEV_DescriptionCustodial SupportTextareaNoMax 300 charactersEV_CustodialMaintenance SupportTextareaNoMax 300 charactersEV_MaintenanceFile UploadFile inputNo.pdf, .doc, .docx, .xls, .xlsx; max 10MBEV_Files
+Conditional Display Logic:
+When "One-time" selected:
+
+Show: Event Date field
+Hide: End Date field
+EV_Frequency = "One-time"
+EV_OneTimeDate = selected date
+EV_LongTermStartDate = null
+EV_LongTermEndDate = null
+
+When "Long-term" selected:
+
+Show: Event Date field (labeled "Start Date")
+Show: End Date field
+EV_Frequency = "Long-term"
+EV_OneTimeDate = null
+EV_LongTermStartDate = selected start date
+EV_LongTermEndDate = selected end date
+
+Form Behavior:
+On page load:
+
+Auto-populate Name with currentUser.USER_Name
+Auto-populate Email with currentUser.USER_Email
+Set Name and Email fields to read-only
+Default Request Type to "One-time"
+Hide End Date field initially
+
+When Request Type changes:
+
+If "Long-term" selected → Show End Date field, change "Event Date" label to "Start Date"
+If "One-time" selected → Hide End Date field, change label back to "Event Date"
+
+When Location changes:
+
+Filter spaces: spaces.filter(space => space.SPACE_SchoolID === selectedSchoolId)
+Update Space dropdown options
+Reset Space selection
+
+When Submit clicked:
+
+Validate all required fields
+Validate field formats and logical constraints
+If validation fails: Display errors, do not proceed
+If validation succeeds:
+
+Collect form data into object
+Generate new EV_ID: events.length + 1
+Set EV_RequestorID = currentUser.USER_ID
+Set EV_Status = "Pending"
+Set EV_Comments = ""
+Set EV_ReviewerID = null
+Add to events array
+Log simulated emails to console
+Display success message
+Navigate to index.html
+
+
+
+Implementation Example:
+javascript// In submit-request.js
+
+// Auto-populate fields on page load
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('name').value = currentUser.USER_Name;
+  document.getElementById('email').value = currentUser.USER_Email;
+  document.getElementById('name').readOnly = true;
+  document.getElementById('email').readOnly = true;
+  
+  // Populate Location dropdown
+  populateLocationDropdown();
+});
+
+function populateLocationDropdown() {
+  const locationSelect = document.getElementById('location');
+  locationSelect.innerHTML = '<option value="">-- Select School --</option>';
+  
+  schools.forEach(school => {
+    const option = document.createElement('option');
+    option.value = school.SCH_ID;
+    option.textContent = school.SCH_Name;
+    locationSelect.appendChild(option);
+  });
+}
+
+// Handle request type change
+document.querySelectorAll('input[name="requestType"]').forEach(radio => {
+  radio.addEventListener('change', function() {
+    const endDateField = document.getElementById('endDateGroup');
+    const eventDateLabel = document.querySelector('label[for="eventDate"]');
+    
+    if (this.value === 'Long-term') {
+      endDateField.style.display = 'block';
+      eventDateLabel.textContent = 'Start Date:';
+    } else {
+      endDateField.style.display = 'none';
+      eventDateLabel.textContent = 'Event Date:';
+    }
+  });
+});
+
+// Handle location change (filter spaces)
+document.getElementById('location').addEventListener('change', function() {
+  const selectedSchoolId = parseInt(this.value);
+  
+  if (selectedSchoolId) {
+    const filteredSpaces = spaces.filter(sp => sp.SPACE_SchoolID === selectedSchoolId);
+    
+    const spaceDropdown = document.getElementById('space');
+    spaceDropdown.innerHTML = '<option value="">-- Select Space --</option>';
+    
+    filteredSpaces.forEach(space => {
+      const option = document.createElement('option');
+      option.value = space.SPACE_ID;
+      option.textContent = space.SPACE_Name;
+      spaceDropdown.appendChild(option);
+    });
+  }
+});
+
+// Handle form submission
+document.getElementById('submitRequestForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  // Validate form
+  if (!validateForm()) {
+    return;
+  }
+  
+  // Determine request type
+  const requestType = document.querySelector('input[name="requestType"]:checked').value;
+  
+  // Collect form data
+  const formData = {
+    EV_ID: events.length + 1,
+    EV_Frequency: requestType,
+    EV_RequestorID: currentUser.USER_ID,
+    EV_ReviewerID: null,
+    EV_Organization: document.getElementById('organization').value || currentUser.USER_Name,
+    EV_SchoolID: parseInt(document.getElementById('location').value),
+    EV_SpaceID: parseInt(document.getElementById('space').value),
+    EV_StartTime: document.getElementById('startTime').value,
+    EV_EndTime: document.getElementById('endTime').value,
+    EV_Attendees: parseInt(document.getElementById('attendees').value),
+    EV_Description: document.getElementById('description').value,
+    EV_Custodial: document.getElementById('custodial').value,
+    EV_Maintenance: document.getElementById('maintenance').value,
+    EV_Files: document.getElementById('fileUpload').files[0]?.name || null,
+    EV_Status: "Pending",
+    EV_Comments: ""
+  };
+  
+  // Set date fields based on request type
+  if (requestType === 'One-time') {
+    formData.EV_OneTimeDate = document.getElementById('eventDate').value;
+    formData.EV_LongTermStartDate = null;
+    formData.EV_LongTermEndDate = null;
+  } else {
+    formData.EV_OneTimeDate = null;
+    formData.EV_LongTermStartDate = document.getElementById('eventDate').value;
+    formData.EV_LongTermEndDate = document.getElementById('endDate').value;
+  }
+  
+  // Add to events array
+  events.push(formData);
+  
+  // Get requestor email
+  const requestorEmail = currentUser.USER_Email;
+  
+  // Simulate email notifications
+  console.log('=== EMAIL SIMULATION ===');
+  console.log(`To: ${requestorEmail}`);
+  console.log(`Subject: Facility Request Submitted`);
+  console.log(`Body: Your request has been submitted and is pending review.`);
+  console.log('========================');
+  
+  // Show success message
+  alert('Request submitted successfully!');
+  
+  // Navigate to home
+  window.location.href = 'index.html';
+});
+
+7.4 Pending Requests Screen
+Page Title: "Pending Requests"
+Layout:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
++------------------------------------------+
+| [Home Button]                            |
+|                                          |
+| Pending Requests                         |
+|                                          |
+| +--------------------------------------+ |
+| | Requestor | Start  | End   | School | |
+| |           | Date   | Date  |        | |
+| | Descrip.  | Status |       | Review | |
+| | (preview) |        |       |        | |
+| +--------------------------------------+ |
+| | John     | 05/15/ | N/A   | Lincoln| |
+| | Smith    | 2026   |       | HS     | |
+| | Youth    | Pending|       | [View] | |
+| | soccer...|        |       |        | |
+| +--------------------------------------+ |
+|                                          |
+| [< Previous]  [Next >]                   |
++------------------------------------------+
+Table Columns:
+ColumnDescriptionMaps to AttributeRequestorName from users array where USER_ID = EV_RequestorIDUSER_NameStart DateEV_OneTimeDate or EV_LongTermStartDateDate fieldEnd DateEV_LongTermEndDate or "N/A"Date fieldSchoolSchool name from schools where SCH_ID = EV_SchoolIDSCH_NameDescriptionFirst 50 chars of EV_Description + "..."EV_DescriptionStatusEV_Status badgeEV_StatusReviewView button-
+Filtering Logic:
+
+Show only events where EV_Status === "Pending"
+Show only events where EV_SchoolID matches currentUser's school
+
+Implementation Example:
+javascript// In pending-requests.js
+
+function loadPendingRequests() {
+  // Find current user's school ID
+  const userSchool = schools.find(s => s.SCH_Name === currentUser.USER_School);
+  const userSchoolId = userSchool ? userSchool.SCH_ID : null;
+  
+  // Filter pending events for user's school
+  const pendingEvents = events.filter(event => 
+    event.EV_Status === 'Pending' && 
+    event.EV_SchoolID === userSchoolId
+  );
+  
+  // Sort by start date
+  pendingEvents.sort((a, b) => {
+    const dateA = a.EV_OneTimeDate || a.EV_LongTermStartDate;
+    const dateB = b.EV_OneTimeDate || b.EV_LongTermStartDate;
+    return new Date(dateA) - new Date(dateB);
+  });
+  
+  const tableBody = document.getElementById('pendingRequestsTable');
+  tableBody.innerHTML = '';
+  
+  pendingEvents.forEach(event => {
+    const row = document.createElement('tr');
+    
+    // Get requestor name
+    const requestor = users.find(u => u.USER_ID === event.EV_RequestorID);
+    const requestorName = requestor ? requestor.USER_Name : 'Unknown';
+    
+    // Get school name
+    const school = schools.find(s => s.SCH_ID === event.EV_SchoolID);
+    const schoolName = school ? school.SCH_Name : 'Unknown';
+    
+    // Get dates
+    const startDate = event.EV_OneTimeDate || event.EV_LongTermStartDate;
+    const endDate = event.EV_LongTermEndDate || 'N/A';
+    
+    // Truncate description
+    const description = event.EV_Description.length > 50 
+      ? event.EV_Description.substring(0, 50) + '...' 
+      : event.EV_Description;
+    
+    row.innerHTML = `
+      <td>${requestorName}</td>
+      <td>${formatDate(startDate)}</td>
+      <td>${endDate !== 'N/A' ? formatDate(endDate) : 'N/A'}</td>
+      <td>${schoolName}</td>
+      <td>${description}</td>
+      <td><span class="status-badge pending">Pending</span></td>
+      <td><button onclick="viewRequest(${event.EV_ID})" class="btn-view">View</button></td>
+    `;
+    
+    tableBody.appendChild(row);
+  });
+}
+
+function viewRequest(eventId) {
+  sessionStorage.setItem('reviewEventId', eventId);
+  window.location.href = 'review-request.html';
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}/${date.getFullYear()}`;
+}
+
+// Load requests on page load
+document.addEventListener('DOMContentLoaded', loadPendingRequests);
+
+7.5 Review Request Screen
+Page Title: "Request for Review"
+Layout:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
++------------------------------------------+
+| [Home Button] [Back to List]             |
+|                                          |
+| Request for Review                       |
+|                                          |
+| REQUEST DETAILS                          |
+| [Display all event fields]               |
+|                                          |
+| +------------------------------------+   |
+| |  CALENDAR PREVIEW                  |   |
+| +------------------------------------+   |
+|                                          |
+| Internal Comments (optional):            |
+| [___________________________________]    |
+|                                          |
+| [Approve] [Deny] [Create Quote (grayed)]|
++------------------------------------------+
+Display all event attributes:
+
+Requestor Name (lookup from users array using EV_RequestorID)
+Organization (EV_Organization)
+Email (lookup from users array)
+Request Type (EV_Frequency)
+Event Date or Start/End Date (EV_OneTimeDate or EV_LongTermStartDate/EV_LongTermEndDate)
+Start Time (EV_StartTime)
+End Time (EV_EndTime)
+Location (lookup school name using EV_SchoolID)
+Space (lookup space name using EV_SpaceID)
+Attendees (EV_Attendees)
+Description (EV_Description)
+Custodial Support (EV_Custodial)
+Maintenance Support (EV_Maintenance)
+Uploaded File (EV_Files)
+
+Interactions:
+When "Approve" clicked:
+
+Update event in events array:
+
+EV_Status = "Approved"
+EV_Comments = [entered comments]
+EV_ReviewerID = currentUser.USER_ID
+
+
+Simulate emails (console.log)
+Display confirmation
+Navigate to pending-requests.html
+
+When "Deny" clicked:
+
+Confirm action
+Update event:
+
+EV_Status = "Denied"
+EV_Comments = [entered comments]
+EV_ReviewerID = currentUser.USER_ID
+
+
+Simulate email
+Display confirmation
+Navigate to pending-requests.html
+
+Implementation Example:
+javascript// In review-request.js
+
+let currentEvent = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+  const eventId = parseInt(sessionStorage.getItem('reviewEventId'));
+  currentEvent = events.find(e => e.EV_ID === eventId);
+  
+  if (!currentEvent) {
+    alert('Event not found');
+    window.location.href = 'pending-requests.html';
+    return;
+  }
+  
+  // Get requestor info
+  const requestor = users.find(u => u.USER_ID === currentEvent.EV_RequestorID);
+  
+  // Get school info
+  const school = schools.find(s => s.SCH_ID === currentEvent.EV_SchoolID);
+  
+  // Get space info
+  const space = spaces.find(s => s.SPACE_ID === currentEvent.EV_SpaceID);
+  
+  // Populate fields
+  document.getElementById('displayName').textContent = requestor ? requestor.USER_Name : 'Unknown';
+  document.getElementById('displayEmail').textContent = requestor ? requestor.USER_Email : 'Unknown';
+  document.getElementById('displayOrganization').textContent = currentEvent.EV_Organization;
+  document.getElementById('displayType').textContent = currentEvent.EV_Frequency;
+  
+  // Display dates based on type
+  if (currentEvent.EV_Frequency === 'One-time') {
+    document.getElementById('displayDate').textContent = formatDateLong(currentEvent.EV_OneTimeDate);
+  } else {
+    document.getElementById('displayStartDate').textContent = formatDateLong(currentEvent.EV_LongTermStartDate);
+    document.getElementById('displayEndDate').textContent = formatDateLong(currentEvent.EV_LongTermEndDate);
+    document.getElementById('endDateSection').style.display = 'block';
+  }
+  
+  document.getElementById('displayStartTime').textContent = formatTime(currentEvent.EV_StartTime);
+  document.getElementById('displayEndTime').textContent = formatTime(currentEvent.EV_EndTime);
+  document.getElementById('displayLocation').textContent = school ? school.SCH_Name : 'Unknown';
+  document.getElementById('displaySpace').textContent = space ? space.SPACE_Name : 'Unknown';
+  document.getElementById('displayAttendees').textContent = currentEvent.EV_Attendees;
+  document.getElementById('displayDescription').textContent = currentEvent.EV_Description;
+  document.getElementById('displayCustodial').textContent = currentEvent.EV_Custodial || 'None';
+  document.getElementById('displayMaintenance').textContent = currentEvent.EV_Maintenance || 'None';
+  
+  if (currentEvent.EV_Files) {
+    document.getElementById('fileSection').style.display = 'block';
+    document.getElementById('fileName').textContent = currentEvent.EV_Files;
+  }
+  
+  // Build calendar preview
+  const eventDate = currentEvent.EV_OneTimeDate || currentEvent.EV_LongTermStartDate;
+  buildCalendarPreview(eventDate);
+});
+
+function handleApprove() {
+  if (confirm('Are you sure you want to approve this request?')) {
+    const comments = document.getElementById('comments').value;
+    
+    currentEvent.EV_Status = 'Approved';
+    currentEvent.EV_Comments = comments;
+    currentEvent.EV_ReviewerID = currentUser.USER_ID;
+    
+    // Get requestor for email
+    const requestor = users.find(u => u.USER_ID === currentEvent.EV_RequestorID);
+    
+    // Simulate emails
+    console.log('=== EMAIL TO REQUESTOR ===');
+    console.log(`To: ${requestor.USER_Email}`);
+    console.log(`Subject: Request Approved`);
+    console.log(`Body: Your facility use request has been approved.`);
+    console.log('==========================');
+    
+    console.log('=== EMAIL TO OPERATIONS ===');
+    console.log(`Event: ${currentEvent.EV_Description}`);
+    console.log(`Custodial: ${currentEvent.EV_Custodial}`);
+    console.log(`Maintenance: ${currentEvent.EV_Maintenance}`);
+    console.log('===========================');
+    
+    console.log('=== EMAIL TO ENERGY MANAGER ===');
+    console.log(`HVAC needed for event on ${currentEvent.EV_OneTimeDate || currentEvent.EV_LongTermStartDate}`);
+    console.log('================================');
+    
+    alert('Request approved. Notifications sent.');
+    window.location.href = 'pending-requests.html';
+  }
+}
+
+function handleDeny() {
+  if (confirm('Are you sure you want to deny this request? This action cannot be undone.')) {
+    const comments = document.getElementById('comments').value;
+    
+    currentEvent.EV_Status = 'Denied';
+    currentEvent.EV_Comments = comments;
+    currentEvent.EV_ReviewerID = currentUser.USER_ID;
+    
+    const requestor = users.find(u => u.USER_ID === currentEvent.EV_RequestorID);
+    
+    console.log('=== EMAIL TO REQUESTOR ===');
+    console.log(`To: ${requestor.USER_Email}`);
+    console.log(`Subject: Request Denied`);
+    console.log(`Body: Your facility use request has been denied.`);
+    if (comments) {
+      console.log(`Reason: ${comments}`);
+    }
+    console.log('==========================');
+    
+    alert('Request denied. Notification sent.');
+    window.location.href = 'pending-requests.html';
+  }
+}
+
+function handleCreateQuote() {
+  alert('Quote generation feature is not available in this prototype.');
+}
+
+7.6 Calendar View Screen
+Page Title: "Facilities Reservation Calendar"
+Layout:
++------------------------------------------+
+|          [LCSD Logo/Image]               |
+|   Local County School District           |
++------------------------------------------+
+| [Home Button]                            |
+|                                          |
+| Facilities Reservation Calendar          |
+|                                          |
+| +-------------------+  +---------------+ |
+| |   CALENDAR        |  | Select        | |
+| |   [Month grid]    |  | Filters:      | |
+| +-------------------+  +---------------+ |
+|                                          |
+| EVENTS ON [Selected Date]:               |
+| [Event cards with status badges]         |
++------------------------------------------+
+Filter events by:
+
+EV_SchoolID matches currentUser's school
+Month matches selected month
+EV_Status matches selected status filter (or "All")
+
+Implementation Example:
+javascript// In calendar.js
+
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+
+function applyFilters() {
+  const monthYearValue = document.getElementById('monthFilter').value;
+  const [year, month] = monthYearValue.split('-').map(Number);
+  currentYear = year;
+  currentMonth = month - 1;
+  
+  const statusFilter = document.querySelector('input[name="statusFilter"]:checked').value;
+  
+  buildCalendar(statusFilter);
+}
+
+function buildCalendar(statusFilter = 'All') {
+  // Find current user's school ID
+  const userSchool = schools.find(s => s.SCH_Name === currentUser.USER_School);
+  const userSchoolId = userSchool ? userSchool.SCH_ID : null;
+  
+  // Filter events
+  const filteredEvents = events.filter(event => {
+    // School filter
+    if (event.EV_SchoolID !== userSchoolId) {
+      return false;
+    }
+    
+    // Status filter
+    if (statusFilter !== 'All' && event.EV_Status !== statusFilter) {
+      return false;
+    }
+    
+    // Month filter
+    const eventDate = new Date(event.EV_OneTimeDate || event.EV_LongTermStartDate);
+    if (eventDate.getMonth() !== currentMonth || eventDate.getFullYear() !== currentYear) {
+      return false;
+    }
+    
+    return true;
+  });
+  
+  // Build calendar grid (implementation details...)
+  // Mark days with events
+  // Show status indicators (green dot for Approved, orange for Pending)
+}
+
+function displayEventsForDate(dateStr, dayEvents) {
+  const eventList = document.getElementById('eventList');
+  eventList.innerHTML = `<h3>Events on ${formatDateLong(dateStr)}</h3>`;
+  
+  if (dayEvents.length === 0) {
+    eventList.innerHTML += '<p>No events scheduled</p>';
+    return;
+  }
+  
+  dayEvents.forEach(event => {
+    // Get space name
+    const space = spaces.find(s => s.SPACE_ID === event.EV_SpaceID);
+    const spaceName = space ? space.SPACE_Name : 'Unknown';
+    
+    const card = document.createElement('div');
+    card.className = `event-card status-${event.EV_Status.toLowerCase().replace(' ', '-')}`;
+    
+    card.innerHTML = `
+      <div class="event-time">${formatTime(event.EV_StartTime)} - ${formatTime(event.EV_EndTime)}</div>
+      <div class="event-location">${spaceName}</div>
+      <div class="event-title">${event.EV_Description}</div>
+      <div class="event-status ${event.EV_Status.toLowerCase()}">
+        ${event.EV_Status === 'Approved' ? '✓' : '⏱'} ${event.EV_Status.toUpperCase()}
+      </div>
+    `;
+    
+    eventList.appendChild(card);
+  });
+}
+
+7.7 Reference Documents Screen
+Page Title: "Facilities Reservation Reference Documents"
+Implementation:
+javascript// In reference-documents.js
+
+function loadDocuments() {
+  const tableBody = document.getElementById('documentsTable');
+  tableBody.innerHTML = '';
+  
+  referenceDocuments.forEach(doc => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${doc.DOC_Name}</td>
+      <td>${formatDate(doc.uploadDate)}</td>
+      <td><button onclick="viewDocument('${doc.fileUrl}')" class="btn-view">View</button></td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+function viewDocument(fileUrl) {
+  window.open(fileUrl, '_blank');
+}
+
+7.8 Archived Requests Screen
+Page Title: "Facilities Reservation Archived Requests"
+Show events where:
+
+EV_Status === "Approved" OR EV_Status === "Denied"
+EV_SchoolID matches currentUser's school
+
+Implementation:
+javascript// In archived-requests.js
+
+function loadArchivedRequests() {
+  const userSchool = schools.find(s => s.SCH_Name === currentUser.USER_School);
+  const userSchoolId = userSchool ? userSchool.SCH_ID : null;
+  
+  const archivedEvents = events.filter(event => 
+    (event.EV_Status === 'Approved' || event.EV_Status === 'Denied') && 
+    event.EV_SchoolID === userSchoolId
+  );
+  
+  // Sort by start date (most recent first)
+  archivedEvents.sort((a, b) => {
+    const dateA = new Date(a.EV_OneTimeDate || a.EV_LongTermStartDate);
+    const dateB = new Date(b.EV_OneTimeDate || b.EV_LongTermStartDate);
+    return dateB - dateA;
+  });
+  
+  const tableBody = document.getElementById('archivedRequestsTable');
+  tableBody.innerHTML = '';
+  
+  archivedEvents.forEach(event => {
+    const requestor = users.find(u => u.USER_ID === event.EV_RequestorID);
+    const school = schools.find(s => s.SCH_ID === event.EV_SchoolID);
+    
+    const startDate = event.EV_OneTimeDate || event.EV_LongTermStartDate;
+    const endDate = event.EV_LongTermEndDate || 'N/A';
+    const description = event.EV_Description.length > 30 
+      ? event.EV_Description.substring(0, 30) + '...' 
+      : event.EV_Description;
+    
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${requestor ? requestor.USER_Name : 'Unknown'}</td>
+      <td>${formatDate(startDate)}</td>
+      <td>${endDate !== 'N/A' ? formatDate(endDate) : 'N/A'}</td>
+      <td>${school ? school.SCH_Name : 'Unknown'}</td>
+      <td>${description}</td>
+      <td><span class="status-badge ${event.EV_Status.toLowerCase()}">${event.EV_Status}</span></td>
+      <td><button onclick="viewArchived(${event.EV_ID})" class="btn-view">View</button></td>
+    `;
+    
+    tableBody.appendChild(row);
+  });
+}
+
+function viewArchived(eventId) {
+  alert('Archived request detail view - Event ID: ' + eventId);
+}
+
+8. Program Logic & Feature Behavior
+8.1 Feature 1: Submit Request
+Triggering Action: User clicks "Submit Request" from Home
+Program Flow:
+START
+  Display home screen
+  User clicks "Submit Request"
+  Navigate to Submit Request screen
+  
+  SYSTEM AUTO-POPULATES:
+  - Name field with currentUser.USER_Name (read-only)
+  - Email field with currentUser.USER_Email (read-only)
+  
+  DEFAULT SETTINGS:
+  - Request Type: "One-time" selected
+  - End Date field: Hidden
+  
+  INPUT: User selects Request Type (One-time or Long-term)
+  
+  IF "Long-term" selected:
+    OUTPUT: Show End Date field
+    Label "Event Date" becomes "Start Date"
+  ELSE:
+    OUTPUT: Hide End Date field
+    Keep "Event Date" label
+  
+  INPUT: User selects Location (school) from dropdown
+  
+  SYSTEM PROCESSING:
+  - Filter spaces: WHERE SPACE_SchoolID = selected SCH_ID
+  - Populate Space dropdown with filtered spaces
+  
+  INPUT: User fills out all remaining fields
+  INPUT: User optionally uploads file
+  INPUT: User clicks "Submit"
+  
+  VALIDATION: Check all required fields and formats
+  
+  IF validation FAILS:
+    FOR EACH invalid field:
+      OUTPUT: Display error message below field
+      OUTPUT: Highlight field with red border
+    STOP (wait for user to correct)
+  
+  IF validation SUCCEEDS:
+    SYSTEM PROCESSING:
+    - Generate new EV_ID = events.length + 1
+    - Get selected Request Type
+    - Create event object:
+      EV_ID = new ID
+      EV_Frequency = selected type
+      EV_RequestorID = currentUser.USER_ID
+      EV_ReviewerID = null
+      EV_Organization = form value
+      EV_SchoolID = selected school ID
+      EV_SpaceID = selected space ID
+      EV_StartTime = form value
+      EV_EndTime = form value
+      EV_Attendees = form value
+      EV_Description = form value
+      EV_Custodial = form value
+      EV_Maintenance = form value
+      EV_Files = uploaded filename or null
+      EV_Status = "Pending"
+      EV_Comments = ""
+      
+      IF One-time:
+        EV_OneTimeDate = selected date
+        EV_LongTermStartDate = null
+        EV_LongTermEndDate = null
+      ELSE (Long-term):
+        EV_OneTimeDate = null
+        EV_LongTermStartDate = selected start date
+        EV_LongTermEndDate = selected end date
+    
+    - Add event object to events array
+    
+    SIMULATE ACTIONS (console.log):
+    - Email to currentUser.USER_Email: "Request submitted"
+    
+    OUTPUT: Success message "Request submitted successfully!"
+    Navigate to Home screen
+END
+Validation Rules:
+FieldValidationMaps toEvent DateRequired, must be future dateEV_OneTimeDate or EV_LongTermStartDateEnd DateRequired if Long-term, must be > Event DateEV_LongTermEndDateStart TimeRequired, valid timeEV_StartTimeEnd TimeRequired, must be > Start TimeEV_EndTimeLocationRequiredEV_SchoolIDSpaceRequiredEV_SpaceIDAttendeesRequired, positive integerEV_AttendeesDescriptionRequired, max 500 charsEV_DescriptionFileOptional, types/size constraintsEV_Files
+
+8.2 Feature 2: Review Request
+Triggering Action: User clicks "Review Requests", then selects specific request
+Program Flow:
+START
+  Display home screen
+  User clicks "Review Requests"
+  Navigate to Pending Requests screen
+  
+  SYSTEM PROCESSING:
+  - Find currentUser's school: WHERE SCH_Name = currentUser.USER_School
+  - Get SCH_ID
+  - Filter events array:
+    WHERE EV_Status = "Pending"
+    AND EV_SchoolID = user's school ID
+  - Sort by EV_OneTimeDate or EV_LongTermStartDate (earliest first)
+  
+  OUTPUT: Display table of pending requests
+  
+  INPUT: User clicks "View" button on specific request
+  
+  SYSTEM PROCESSING:
+  - Get EV_ID from clicked button
+  - Store in sessionStorage: reviewEventId
+  
+  Navigate to Review Request screen
+  
+  SYSTEM PROCESSING:
+  - Retrieve EV_ID from sessionStorage
+  - Find event in events array: WHERE EV_ID = retrieved ID
+  - Lookup requestor: WHERE USER_ID = event.EV_RequestorID
+  - Lookup school: WHERE SCH_ID = event.EV_SchoolID
+  - Lookup space: WHERE SPACE_ID = event.EV_SpaceID
+  
+  OUTPUT: Display all event details
+  OUTPUT: Display calendar preview for event month
+  OUTPUT: Display internal comments textarea (empty)
+  OUTPUT: Display three buttons: Approve, Deny, Create Quote (grayed)
+  
+  INPUT: User optionally enters comments
+  INPUT: User clicks decision button
+  
+  IF "Approve" clicked:
+    CONFIRM: "Are you sure you want to approve this request?"
+    
+    IF confirmed:
+      SYSTEM PROCESSING:
+      - Get comments from textarea
+      - Update event in events array:
+        EV_Status = "Approved"
+        EV_Comments = entered text
+        EV_ReviewerID = currentUser.USER_ID
+      
+      SIMULATE ACTIONS (console.log):
+      - Email to requestor: "Request approved"
+      - Email to Operations: Event details
+      - Email to Energy Manager: HVAC info
+      
+      OUTPUT: Success message "Request approved. Notifications sent."
+      Navigate to Pending Requests screen
+  
+  IF "Deny" clicked:
+    CONFIRM: "Are you sure you want to deny this request?"
+    
+    IF confirmed:
+      SYSTEM PROCESSING:
+      - Get comments from textarea
+      - Update event in events array:
+        EV_Status = "Denied"
+        EV_Comments = entered text
+        EV_ReviewerID = currentUser.USER_ID
+      
+      SIMULATE ACTION (console.log):
+      - Email to requestor: "Request denied" + reason
+      
+      OUTPUT: Success message "Request denied. Notification sent."
+      Navigate to Pending Requests screen
+  
+  IF "Create Quote" clicked:
+    OUTPUT: Alert "Quote generation feature not available in prototype"
+    STOP
+END
+
+8.3 Feature 3: Calendar View
+Triggering Action: User clicks "Calendar" from Home
+Program Flow:
+START
+  Display home screen
+  User clicks "Calendar"
+  Navigate to Calendar View screen
+  
+  SYSTEM PROCESSING:
+  - Get current date
+  - Find currentUser's school: WHERE SCH_Name = currentUser.USER_School
+  - Get SCH_ID
+  - Set initial filters:
+    Month/Year = current month
+    School = user's SCH_ID
+    Status = "All"
+  - Filter events array:
+    WHERE EV_SchoolID = user's school ID
+    AND event month = current month
+    AND (EV_Status = "Pending" OR EV_Status = "Approved")
+  
+  OUTPUT: Display calendar grid for current month
+  OUTPUT: Indicate days with events (colored dots)
+  OUTPUT: Display filter controls
+  OUTPUT: Display "Generate Report" button (grayed out)
+  
+  INPUT: User clicks on a date
+  
+  SYSTEM PROCESSING:
+  - Get selected date
+  - Filter events WHERE date matches selected date
+  
+  OUTPUT: Display event list below calendar
+  FOR EACH event:
+    Get space: WHERE SPACE_ID = event.EV_SpaceID
+    OUTPUT: Event card showing:
+      - EV_StartTime - EV_EndTime
+      - SPACE_Name
+      - EV_Description
+      - Status badge (based on EV_Status)
+  
+  INPUT: User changes Month/Year filter
+  
+  SYSTEM PROCESSING:
+  - Update currentMonth and currentYear
+  - Re-filter events for new month
+  - Rebuild calendar grid
+  
+  INPUT: User changes Status filter
+  
+  SYSTEM PROCESSING:
+  - Re-filter events WHERE EV_Status matches selection
+  - Rebuild calendar grid
+  
+  INPUT: User clicks "Generate Report"
+  
+  OUTPUT: Alert "Report generation not available in prototype"
+END
+
+9. Validation & Error Handling
+9.1 Field-Level Validation
+Validation Functions:
+javascript// In validation.js
+
+function validateRequired(value, fieldName) {
+  if (!value || value.trim() === '') {
+    return `${fieldName} is required`;
+  }
+  return null;
+}
+
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return 'Please enter a valid email address';
+  }
+  return null;
+}
+
+function validateNumber(value, fieldName, mustBePositive = true) {
+  const num = Number(value);
+  if (isNaN(num)) {
+    return `${fieldName} must be a valid number`;
+  }
+  if (mustBePositive && num <= 0) {
+    return `${fieldName} must be a positive number`;
+  }
+  return null;
+}
+
+function validateDate(dateString, mustBeFuture = false) {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    return 'Please select a valid date';
+  }
+  if (mustBeFuture) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (date < today) {
+      return 'Date must be in the future';
+    }
+  }
+  return null;
+}
+
+function validateDateRange(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  if (end <= start) {
+    return 'End date must be after start date';
+  }
+  return null;
+}
+
+function validateTimeRange(startTime, endTime) {
+  if (startTime >= endTime) {
+    return 'End time must be after start time';
+  }
+  return null;
+}
+
+function validateFile(file) {
+  if (!file) return null;
+  
+  const allowedExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx'];
+  const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+  
+  if (!allowedExtensions.includes(fileExtension)) {
+    return 'File must be PDF, Word, or Excel format';
+  }
+  
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  if (file.size > maxSize) {
+    return 'File size must not exceed 10MB';
+  }
+  
+  return null;
+}
+
+function showError(fieldId, message) {
+  let errorElement = document.getElementById(`${fieldId}-error`);
+  
+  if (!errorElement) {
+    errorElement = document.createElement('div');
+    errorElement.id = `${fieldId}-error`;
+    errorElement.className = 'error-message';
+    
+    const field = document.getElementById(fieldId);
+    field.parentNode.appendChild(errorElement);
+  }
+  
+  errorElement.textContent = message;
+  errorElement.style.display = 'block';
+  
+  const field = document.getElementById(fieldId);
+  field.classList.add('error-field');
+}
+
+function clearError(fieldId) {
+  const errorElement = document.getElementById(`${fieldId}-error`);
+  if (errorElement) {
+    errorElement.style.display = 'none';
+    errorElement.textContent = '';
+  }
+  
+  const field = document.getElementById(fieldId);
+  if (field) {
+    field.classList.remove('error-field');
+  }
+}
+
+function clearAllErrors() {
+  const errorMessages = document.querySelectorAll('.error-message');
+  errorMessages.forEach(el => {
+    el.style.display = 'none';
+    el.textContent = '';
+  });
+  
+  const errorFields = document.querySelectorAll('.error-field');
+  errorFields.forEach(field => {
+    field.classList.remove('error-field');
+  });
+}
+9.2 Form-Level Validation
+Validate all fields before form submission, mapping to your data model attributes.
+9.3 Error Display
+Use CSS classes .error-field and .error-message as defined in section 11.3.
+
+10. Data Storage & State Management
+10.1 Conceptual Backend
+Data would be stored in PostgreSQL database with tables for Event, User, School, Space, Quote, and Reference_Document.
+SQL operations would use attribute names exactly as defined (EV_ID, EV_Status, USER_Name, SCH_ID, etc.).
+10.2 Prototype Data Simulation
+All data stored in JavaScript arrays in js/data.js as shown in section 6.3.
+CRUD operations manipulate these arrays directly using the defined attribute names.
+
+11. Implementation Guide for AI
+11.1 File Structure
+lcsd-prototype/
+├── index.html
+├── submit-request.html
+├── pending-requests.html
+├── review-request.html
+├── calendar.html
+├── reference-documents.html
+├── archived-requests.html
+├── css/
+│   └── styles.css
+├── js/
+│   ├── data.js
+│   ├── validation.js
+│   ├── utils.js
+│   ├── submit-request.js
+│   ├── pending-requests.js
+│   ├── review-request.js
+│   ├── calendar.js
+│   ├── reference-documents.js
+│   └── archived-requests.js
+└── assets/
+    ├── lcsd-logo.png
+    └── sample-documents/
+11.2 Sample Data Implementation
+Use the exact structure from section 6.3 with all original attribute names preserved.
+11.3 CSS Styling Requirements
+Use the CSS from the earlier version, ensuring status badges and visual differentiation use both color and icons for accessibility.
+11.4 JavaScript Implementation
+Key Points:
+
+Use original attribute names (EV_ID, USER_Name, SCH_ID, etc.) throughout
+Filter by matching IDs: event.EV_SchoolID === userSchool.SCH_ID
+Lookup related data: users.find(u => u.USER_ID === event.EV_RequestorID)
+Console.log for email simulations
+SessionStorage for passing EV_ID between screens
+
+11.5 Testing Checklist
+Test all functionality ensuring attribute names are used correctly throughout.
+
+12. Appendix
+12.1 Use Case Summaries
+[Same as earlier version]
+12.2 Design Goals
+[Same as earlier version]
+12.3 Glossary
+EV_ID: Unique identifier for events
+EV_Status: Current status (Pending, Approved, Denied, Quote Pending, Quote Sent)
+EV_Frequency: One-time or Long-term
+SCH_ID: Unique identifier for schools
+SPACE_ID: Unique identifier for spaces
+USER_ID: Unique identifier for users
+[Additional terms as needed]
